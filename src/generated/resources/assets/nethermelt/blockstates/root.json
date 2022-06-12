@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "activated=false": {
+      "model": "nethermelt:block/root"
+    },
+    "activated=true": {
+      "model": "nethermelt:block/root"
+    }
+  }
+}

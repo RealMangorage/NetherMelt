@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "minecraft:root2"
+    ]
+  },
+  "criteria": {
+    "nethermelt:root": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "nethermelt:root"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "minecraft:root2"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "nethermelt:root",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "abc",
+    "def",
+    "ghi"
+  ],
+  "key": {
+    "a": {
+      "item": "minecraft:slime_block"
+    },
+    "b": {
+      "item": "minecraft:milk_bucket"
+    },
+    "c": {
+      "item": "minecraft:netherrack"
+    },
+    "d": {
+      "item": "minecraft:water_bucket"
+    },
+    "e": {
+      "item": "minecraft:nether_star"
+    },
+    "f": {
+      "item": "minecraft:lava_bucket"
+    },
+    "g": {
+      "item": "minecraft:gunpowder"
+    },
+    "h": {
+      "item": "minecraft:redstone_block"
+    },
+    "i": {
+      "item": "minecraft:glowstone"
+    }
+  },
+  "result": {
+    "item": "nethermelt:root"
+  }
+}
