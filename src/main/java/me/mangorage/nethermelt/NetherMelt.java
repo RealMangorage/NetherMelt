@@ -53,7 +53,6 @@ public class NetherMelt {
 
         MinecraftEventBus.register(this);
         MinecraftEventBus.register(new NetherMeltEvents());
-
     }
 
     public static Core getCore() {
