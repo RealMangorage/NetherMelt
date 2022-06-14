@@ -107,6 +107,7 @@ public class Core {
             level.setBlock(pos, Blocks.NETHERRACK.defaultBlockState(), Block.UPDATE_ALL);
         }
 
+
     }
 
     public void Die(FoamBlockEntity foam, FoamDeathType DeathType) {
