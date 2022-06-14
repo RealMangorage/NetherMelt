@@ -57,7 +57,7 @@ public class Core {
     private boolean isInRange(BlockPos RootPos, BlockPos pos) {
         AtomicBoolean result = new AtomicBoolean(true);
 
-        if (pos.getY() <= 1) {
+        if (pos.getY() <= 1 || pos.getY() >= 127) {
             return false;
         }
 
@@ -65,7 +65,9 @@ public class Core {
             result.set(false);
         }
 
-
+        if (getDistanceY(RootPos, pos) >= Range/2) {
+            result.set(false);
+        }
 
         return result.get();
     }
@@ -89,20 +91,22 @@ public class Core {
 
     public void Grow(RootBlockEntity root, ServerLevel level, BlockPos pos, BlockState state) {
         if (canCorrode(state)) {
-
             if (isInRange(root.getBlockPos(), pos)) {
                 level.setBlock(pos, Registry.BLOCK_FOAM.get().defaultBlockState(), Block.UPDATE_ALL);
 
                 FoamBlockEntity entity = (FoamBlockEntity) level.getBlockEntity(pos);
 
                 entity.setRoot(root);
-
                 root.addFoam(pos);
-            } else {
-                // Walls && Ceiling, not Floor! Maybe not floor
-                level.setBlock(pos, Blocks.GLASS.defaultBlockState(), Block.UPDATE_ALL);
+                return;
             }
         }
+
+        if (!isInRange(root.getBlockPos(), pos)) {
+            // Walls && Ceiling, not Floor! Maybe not floor
+            level.setBlock(pos, Blocks.NETHERRACK.defaultBlockState(), Block.UPDATE_ALL);
+        }
+
     }
 
     public void Die(FoamBlockEntity foam, FoamDeathType DeathType) {

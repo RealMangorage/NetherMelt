@@ -17,14 +17,14 @@ public class GenBlockStateProvider extends BlockStateProvider {
     }
 
 
-    public void FoamBlock() {
+    public void createFoamBlock() {
         Block block = Registry.BLOCK_FOAM.get();
         ResourceLocation id = Objects.requireNonNull(block.getRegistryName());
         String namespace = id.getNamespace();
         String name = id.getPath();
 
         getVariantBuilder(block).forAllStates(state -> {
-            int level = state.getValue(FoamBlock.STAGES);
+            int level = state.getValue(FoamBlock.STAGE);
 
             String modelName = name + "_" + level;
             ResourceLocation textureLocation = new ResourceLocation(namespace, ModelProvider.BLOCK_FOLDER + "/" + modelName);
@@ -51,7 +51,7 @@ public class GenBlockStateProvider extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        FoamBlock();
+        createFoamBlock();
         createBlockModel(Registry.BLOCK_ROOT.get());
         createBlockModel(Registry.BLOCK_DEAD_ROOT.get());
         createBlockModel(Registry.BLOCK_DEAD_FOAM.get());

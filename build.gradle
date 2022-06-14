@@ -11,10 +11,6 @@ buildscript {
     }
 }
 
-plugins {
-    id "maven-publish"
-}
-
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
 
@@ -161,7 +157,7 @@ dependencies {
 
     runtimeOnly fg.deobf("curse.maven:jei-238222:3788739")
     runtimeOnly fg.deobf("curse.maven:the-one-probe-245211:3671753")
-    runtimeOnly fg.deobf("curse.maven:etherium-509305:3761025")
+    runtimeOnly fg.deobf("curse.maven:carry-on-274259:3674344")
 }
 
 // Example for how to get properties into the manifest for reading at runtime.

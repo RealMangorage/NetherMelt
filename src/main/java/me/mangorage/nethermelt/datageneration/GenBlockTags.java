@@ -1,4 +1,4 @@
-package me.mangorage.nethermelt.datageneration.tags;
+package me.mangorage.nethermelt.datageneration;
 
 import me.mangorage.nethermelt.NetherMelt;
 import me.mangorage.nethermelt.setup.Registry;
@@ -17,9 +17,11 @@ public class GenBlockTags extends BlockTagsProvider {
     @Override
     protected void addTags() {
         tag(BlockTags.NEEDS_DIAMOND_TOOL)
-                .add(Registry.BLOCK_ROOT.get());
+                .add(Registry.BLOCK_ROOT.get())
+                .add(Registry.BLOCK_DEAD_ROOT.get());
         tag(BlockTags.MINEABLE_WITH_PICKAXE)
-                .add(Registry.BLOCK_ROOT.get());
+                .add(Registry.BLOCK_ROOT.get())
+                .add(Registry.BLOCK_DEAD_ROOT.get());
     }
 
     @Override

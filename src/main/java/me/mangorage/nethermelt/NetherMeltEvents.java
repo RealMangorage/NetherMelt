@@ -1,11 +1,14 @@
 package me.mangorage.nethermelt;
 
 import me.mangorage.nethermelt.blockentitys.FoamBlockEntity;
+import me.mangorage.nethermelt.commands.ModCommands;
 import me.mangorage.nethermelt.util.FoamDeathType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.apache.logging.log4j.LogManager;
 
 public class NetherMeltEvents {
 
@@ -23,5 +26,11 @@ public class NetherMeltEvents {
                 NetherMelt.getCore().Die(BE, FoamDeathType.DEFAULT);
             }
         }
+    }
+
+    @SubscribeEvent
+    public void serverLoad(RegisterCommandsEvent event) {
+        LogManager.getLogger().error("Loading Command!");
+        ModCommands.register(event.getDispatcher());
     }
 }

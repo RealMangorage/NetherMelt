@@ -24,9 +24,8 @@ import java.util.ArrayList;
 
 public class RootBlockEntity extends BlockEntity {
     private int ticks = 1;
-    private boolean init = false;
-
-    private boolean activated = false;
+    private boolean init = false; // NBT
+    private boolean activated = false; // NBT
     private ArrayList<BlockPos> foams = new ArrayList<>();
 
     public RootBlockEntity(BlockPos pos, BlockState state) {
@@ -39,7 +38,6 @@ public class RootBlockEntity extends BlockEntity {
             return;
         if (getLevel().isClientSide)
             return;
-
         if (getBlockState().getValue(RootBlock.ACTIVATED) && !init) {
             ticks +=1;
             if (ticks % 20 == 0) {
@@ -70,7 +68,8 @@ public class RootBlockEntity extends BlockEntity {
             LogManager.getLogger().info("Foam: " + foams.size());
             if (foams.size() == 0 && activated) {
                 // Die
-                getLevel().setBlock(getBlockPos(), Registry.BLOCK_DEAD_ROOT.get().defaultBlockState(), Block.UPDATE_ALL); // Temp, replace with Dead Root!
+                getLevel().setBlock(getBlockPos(), Registry.BLOCK_DEAD_ROOT.get().defaultBlockState(), Block.UPDATE_ALL);
+                getLevel().scheduleTick(getBlockPos(), getLevel().getBlockState(getBlockPos()).getBlock(), 1);
             }
         }
     }
@@ -90,25 +89,20 @@ public class RootBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
-
+    protected void saveAdditional(CompoundTag Tag) {
+        Tag.putBoolean("init", init);
+        Tag.putBoolean("activated", activated);
     }
 
     @Override
-    public CompoundTag serializeNBT() {
-        return null;
+    public void load(CompoundTag Tag) {
+        if (Tag.contains("init")) {
+            init = Tag.getBoolean("init");
+        }
+
+        if (Tag.contains("activated")) {
+            activated = Tag.getBoolean("activated");
+        }
     }
-
-
-    @Override
-    public void handleUpdateTag(CompoundTag tag) {
-
-    }
-
-    @Override
-    public void onLoad() {
-
-    }
-
-
 }
+

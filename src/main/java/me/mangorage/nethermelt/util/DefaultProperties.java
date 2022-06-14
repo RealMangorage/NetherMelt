@@ -9,9 +9,15 @@ import net.minecraft.world.level.material.Material;
 import java.util.function.Supplier;
 
 public class DefaultProperties {
+    public static Item.Properties ITEM() {
+        return new Item.Properties().tab(NetherMelt.CreativeTab);
+    }
 
-    public static final Item.Properties ITEM = new Item.Properties().tab(NetherMelt.CreativeTab);
-    public static final BlockBehaviour.Properties BLOCK = BlockBehaviour.Properties.of(Material.STONE);
+    public static BlockBehaviour.Properties BLOCK(Material material) {
+        return BlockBehaviour.Properties.of(material);
+    }
 
-
+    public static BlockBehaviour.Properties BLOCK() {
+        return BLOCK(Material.STONE);
+    }
 }

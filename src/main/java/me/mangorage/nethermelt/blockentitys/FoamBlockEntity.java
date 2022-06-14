@@ -7,9 +7,12 @@ import me.mangorage.nethermelt.util.FoamDeathType;
 import net.minecraft.client.resources.sounds.AmbientSoundHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -23,8 +26,9 @@ public class FoamBlockEntity extends BlockEntity {
 
     private float[] chance = new float[]{0.1f, 0f, 0f, 0f, 0.2f, 0.0f, 0f, 0.3f, 0f, 0f, 0f, 0.4f, 0.5f};
     private Random random = new Random();
-    private RootBlockEntity root;
-    private boolean ticked = false;
+    private RootBlockEntity root; // NBT
+    private BlockPos rootdata; // Used for Loading purposes
+    private boolean ticked = false; // NBT
     private int ticks = 0;
 
     private Runnable run = null;
@@ -57,6 +61,13 @@ public class FoamBlockEntity extends BlockEntity {
     public void tick() {
         if (getLevel().isClientSide)
             return;
+        if (rootdata != null) {
+            if (getLevel().getBlockEntity(rootdata) instanceof RootBlockEntity) {
+                root = (RootBlockEntity) getLevel().getBlockEntity(rootdata);
+                root.addFoam(getBlockPos());
+            }
+            rootdata = null; // clean up!
+        }
         if (root == null)
             return;
         if (!(getLevel().getBlockEntity(root.getBlockPos()) instanceof RootBlockEntity)) {
@@ -65,13 +76,17 @@ public class FoamBlockEntity extends BlockEntity {
             return;
         }
 
-        if (getBlockState().getValue(FoamBlock.STAGES) == 1 && !ticked) {
-            ticked = !ticked;
-            getLevel().scheduleTick(getBlockPos(), getBlockState().getBlock(), 20);
+        if (getBlockState().getValue(FoamBlock.STAGE) < FoamBlock.MAX_STAGES) {
+            ticks++;
+            if (ticks % 20 == 0) {
+                ticks = 0;
+
+                getLevel().setBlock(getBlockPos(), getBlockState().cycle(FoamBlock.STAGE), Block.UPDATE_ALL);
+            }
         }
 
-        if (getBlockState().getValue(FoamBlock.STAGES) >= FoamBlock.MAX_STAGES && NetherMelt.getCore() != null) {
-            ticks += 1;
+        if (getBlockState().getValue(FoamBlock.STAGE) >= FoamBlock.MAX_STAGES && NetherMelt.getCore() != null) {
+            ticks++;
             if (ticks % 20 == 0) {
 
                 if (run != null) {
@@ -101,5 +116,17 @@ public class FoamBlockEntity extends BlockEntity {
 
             }
         }
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag Tag) {
+        if (root != null)
+            Tag.put("Source", NbtUtils.writeBlockPos(root.getBlockPos()));
+    }
+
+    @Override
+    public void load(CompoundTag Tag) {
+        if (Tag.contains("Source"))
+            rootdata = NbtUtils.readBlockPos(Tag.getCompound("Source"));
     }
 }

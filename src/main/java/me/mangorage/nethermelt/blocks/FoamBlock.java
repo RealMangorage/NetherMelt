@@ -24,6 +24,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.TickingBlockEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -31,35 +32,29 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.material.Material;
 
 import javax.annotation.Nullable;
 import java.util.Random;
 
 public class FoamBlock extends Block implements EntityBlock {
+    private int[] LIGHT_LEVELS = {2, 6, 8, 15};
     public static int MAX_STAGES = 4;
-    public static IntegerProperty STAGES = IntegerProperty.create("stage", 1, MAX_STAGES);
+    public static IntegerProperty STAGE = IntegerProperty.create("stage", 1, MAX_STAGES);
 
 
     public FoamBlock() {
-        super(DefaultProperties.BLOCK.noOcclusion());
+        super(DefaultProperties.BLOCK(Material.SPONGE).noOcclusion());
     }
 
-
     @Override
-    public void tick(BlockState state, ServerLevel serverLevel, BlockPos blockPos, Random random) {
-        if (state.getValue(STAGES) < 4) {
-            serverLevel.setBlock(blockPos, state.cycle(STAGES), Block.UPDATE_ALL);
-
-            FoamBlockEntity BE = (FoamBlockEntity) serverLevel.getBlockEntity(blockPos);
-            BE.playSound();
-
-            serverLevel.scheduleTick(blockPos, serverLevel.getBlockState(blockPos).getBlock(), 20);
-        }
+    public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
+        return LIGHT_LEVELS[state.getValue(STAGE)-1];
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> BUILDER) {
-        BUILDER.add(STAGES);
+        BUILDER.add(STAGE);
     }
 
     @Nullable

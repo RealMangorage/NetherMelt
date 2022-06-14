@@ -49,7 +49,7 @@ public class GenRecipes extends RecipeProvider {
                 .define('b', Items.MILK_BUCKET)
                 .define('c', Items.NETHERRACK)
                 .define('d', Items.WATER_BUCKET)
-                .define('e', Registry.ITEM_ROOT.get())
+                .define('e', Registry.ITEM_DEAD_ROOT.get())
                 .define('f', Items.LAVA_BUCKET)
                 .define('g', Items.GUNPOWDER)
                 .define('h', Items.REDSTONE_BLOCK)

@@ -2,6 +2,8 @@ package me.mangorage.nethermelt.datageneration.localization;
 
 import me.mangorage.nethermelt.NetherMelt;
 import me.mangorage.nethermelt.setup.Registry;
+import me.mangorage.nethermelt.util.Translatable;
+import net.minecraft.ChatFormatting;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
 
@@ -18,5 +20,7 @@ public class en_us extends LanguageProvider {
         add(Registry.BLOCK_DEAD_FOAM.get(), "Dead Nether Foam");
 
         add(NetherMelt.CreativeTab.getDisplayName().getString(), "Nether Melt Mod");
+
+        add(Translatable.ROOT_TOOLTIP_WRONG_DIMENSION.getKey(), "Nether Foam Source Can only be activated in the Nether!");
     }
 }

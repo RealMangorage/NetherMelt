@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "nethermelt:root"
+    "nethermelt:root",
+    "nethermelt:deadroot"
   ]
 }

@@ -3,7 +3,6 @@ package me.mangorage.nethermelt.setup;
 import me.mangorage.nethermelt.blockentitys.FoamBlockEntity;
 import me.mangorage.nethermelt.blockentitys.RootBlockEntity;
 import me.mangorage.nethermelt.blocks.*;
-import me.mangorage.nethermelt.items.ItemExample;
 import me.mangorage.nethermelt.NetherMelt;
 import me.mangorage.nethermelt.util.DefaultProperties;
 import net.minecraft.world.item.BlockItem;
@@ -34,10 +33,10 @@ public class Registry {
     public static RegistryObject<BlockEntityType> BLOCKENTITY_FOAM = BLOCK_ENTITYS.register("foam", () -> BlockEntityType.Builder.of(FoamBlockEntity::new, BLOCK_FOAM.get()).build(null));
 
     /** Items **/
-    public static RegistryObject<Item> ITEM_ROOT = ITEMS.register("root", () -> new BlockItem(BLOCK_ROOT.get(), DefaultProperties.ITEM.stacksTo(64)));
-    public static RegistryObject<Item> ITEM_DEAD_ROOT = ITEMS.register("deadroot", () -> new BlockItem(BLOCK_DEAD_ROOT.get(), DefaultProperties.ITEM.stacksTo(64)));
-    public static RegistryObject<Item> ITEM_FOAM = ITEMS.register("foam", () -> new BlockItem(BLOCK_FOAM.get(), DefaultProperties.ITEM.stacksTo(64)));
-    public static RegistryObject<Item> ITEM_DEAD_FOAM = ITEMS.register("deadfoam", () -> new BlockItem(BLOCK_DEAD_FOAM.get(), DefaultProperties.ITEM.stacksTo(64)));
+    public static RegistryObject<Item> ITEM_ROOT = ITEMS.register("root", () -> new BlockItem(BLOCK_ROOT.get(), DefaultProperties.ITEM().stacksTo(64)));
+    public static RegistryObject<Item> ITEM_DEAD_ROOT = ITEMS.register("deadroot", () -> new BlockItem(BLOCK_DEAD_ROOT.get(), DefaultProperties.ITEM().stacksTo(64)));
+    public static RegistryObject<Item> ITEM_FOAM = ITEMS.register("foam", () -> new BlockItem(BLOCK_FOAM.get(), DefaultProperties.ITEM().stacksTo(64)));
+    public static RegistryObject<Item> ITEM_DEAD_FOAM = ITEMS.register("deadfoam", () -> new BlockItem(BLOCK_DEAD_FOAM.get(), DefaultProperties.ITEM().stacksTo(64)));
 
     public static void register(IEventBus bus) {
         BLOCKS.register(bus);

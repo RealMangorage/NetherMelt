@@ -1,5 +1,6 @@
 package me.mangorage.nethermelt;
 
+import me.mangorage.nethermelt.commands.ModCommands;
 import me.mangorage.nethermelt.datageneration.DataGenerators;
 import me.mangorage.nethermelt.setup.Registry;
 import me.mangorage.nethermelt.util.Core;
@@ -10,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
