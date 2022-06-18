@@ -5,7 +5,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
@@ -23,7 +22,7 @@ public class TickCommand implements Command<CommandSourceStack> {
                 .requires(cs -> cs.hasPermission(0))
                 .then(Commands.argument("pos", BlockPosArgument.blockPos())
                         .executes(CMD))
-                .executes((CMD));
+                .executes(CMD);
     }
 
     @Override

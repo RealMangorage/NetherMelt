@@ -1,17 +1,16 @@
 package me.mangorage.nethermelt;
 
-import me.mangorage.nethermelt.commands.ModCommands;
+import com.google.common.collect.ImmutableList;
 import me.mangorage.nethermelt.datageneration.DataGenerators;
+import me.mangorage.nethermelt.render.FoamBlockBakedModel;
 import me.mangorage.nethermelt.setup.Registry;
 import me.mangorage.nethermelt.util.Core;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -51,7 +50,10 @@ public class NetherMelt {
 
         ForgeEventBus.addListener(this::setup);
         ForgeEventBus.addListener(DataGenerators::gatherData);
+        ForgeEventBus.addListener(this::onModelBake);
         ForgeEventBus.addListener(this::setupClient);
+
+        ForgeEventBus.addGenericListener(Block.class, this::MappingFix);
 
         MinecraftEventBus.register(this);
         MinecraftEventBus.register(new NetherMeltEvents());
@@ -66,19 +68,47 @@ public class NetherMelt {
         core.init();
     }
 
-    private void setupClient(final FMLClientSetupEvent event) {
-        ItemBlockRenderTypes.setRenderLayer(Registry.BLOCK_FOAM.get(), RenderType.cutout());
+    public void setupClient(final FMLClientSetupEvent event) {
+        ItemBlockRenderTypes.setRenderLayer(Registry.BLOCK_FOAM.get(), t -> true);
+    }
+
+    public void onModelBake(ModelBakeEvent e) {
+        LogManager.getLogger().error("Loading");
+
+        e.getModelRegistry().entrySet().stream()
+                .filter(entry -> "nethermelt".equals(entry.getKey().getNamespace()) && entry.getKey().getPath().equals("foam"))
+                .forEach(entry -> e.getModelRegistry().put(entry.getKey(), new FoamBlockBakedModel(entry.getValue())));
     }
 
     // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD
     // Event bus for receiving Registry Events)
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-    public static class RegistryEvents {
+    public class RegistryEvents {
 
         @SubscribeEvent
-        public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent) {
+        public void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent) {
 
         }
 
     }
+
+    public void MappingFix(RegistryEvent.MissingMappings<Block> event) {
+        ImmutableList a = event.getMappings(MOD_ID);
+
+        LogManager.getLogger().error("Error! AJHSASO");
+
+        a.forEach(mapping -> {
+
+            RegistryEvent.MissingMappings.Mapping<Block> b = (RegistryEvent.MissingMappings.Mapping<Block>) mapping;
+
+            b.remap(Registry.BLOCK_ROOT.get());
+            b.remap(Registry.BLOCK_DEAD_ROOT.get());
+            b.remap(Registry.BLOCK_FOAM.get());
+            b.remap(Registry.BLOCK_DEAD_FOAM.get());
+        });
+
+    }
+
+
+
 }

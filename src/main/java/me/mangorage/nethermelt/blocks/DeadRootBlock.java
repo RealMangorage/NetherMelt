@@ -1,6 +1,5 @@
 package me.mangorage.nethermelt.blocks;
 
-import me.mangorage.nethermelt.setup.Registry;
 import me.mangorage.nethermelt.util.DefaultProperties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;

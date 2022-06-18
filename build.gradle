@@ -16,7 +16,7 @@ apply plugin: 'org.parchmentmc.librarian.forgegradle'
 
 
 group = 'me.mangorage'
-version = '1.18.2-1.0.0-beta5'
+version = '1.18.2-1.0.0-beta6'
 
 java {
     archivesBaseName = 'nethermeltmod'
@@ -57,8 +57,6 @@ minecraft {
             // You can set various levels here.
             // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
             property 'forge.logging.console.level', 'debug'
-
-
 
             mods {
                 foamblock {

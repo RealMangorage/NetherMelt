@@ -3,7 +3,6 @@ package me.mangorage.nethermelt.datageneration.localization;
 import me.mangorage.nethermelt.NetherMelt;
 import me.mangorage.nethermelt.setup.Registry;
 import me.mangorage.nethermelt.util.Translatable;
-import net.minecraft.ChatFormatting;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
 

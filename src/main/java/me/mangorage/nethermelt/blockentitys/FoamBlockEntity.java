@@ -2,22 +2,28 @@ package me.mangorage.nethermelt.blockentitys;
 
 import me.mangorage.nethermelt.NetherMelt;
 import me.mangorage.nethermelt.blocks.FoamBlock;
+import me.mangorage.nethermelt.render.FoamBlockBakedModel;
 import me.mangorage.nethermelt.setup.Registry;
 import me.mangorage.nethermelt.util.FoamDeathType;
-import net.minecraft.client.resources.sounds.AmbientSoundHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.event.sound.SoundEvent;
-
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelDataMap;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -28,7 +34,7 @@ public class FoamBlockEntity extends BlockEntity {
     private Random random = new Random();
     private RootBlockEntity root; // NBT
     private BlockPos rootdata; // Used for Loading purposes
-    private boolean ticked = false; // NBT
+    private BlockState Absorbing = Blocks.NETHERRACK.defaultBlockState(); // Default: Netherrack
     private int ticks = 0;
 
     private Runnable run = null;
@@ -58,9 +64,50 @@ public class FoamBlockEntity extends BlockEntity {
         }
     }
 
+    private void markUpdated() {
+        this.setChanged();
+
+        if (level != null) {
+            level.sendBlockUpdated(
+                    getBlockPos(),
+                    getBlockState(),
+                    getBlockState(),
+                    Block.UPDATE_ALL
+            );
+
+            level.updateNeighborsAt(getBlockPos(), getBlockState().getBlock());
+            getBlockState().updateNeighbourShapes(level, worldPosition, 2);
+            level.getChunkSource().getLightEngine().checkBlock(getBlockPos());
+        }
+    }
+
+
+    public void setAbsorbing(BlockState State) {
+        Absorbing = State;
+        markUpdated();
+    }
+
+    public BlockState getAbsorbing() {
+        return Absorbing;
+    }
+
+    private void updateClient() {
+        if (level != null && level.isClientSide) {
+            level.sendBlockUpdated(
+                    getBlockPos(),
+                    getBlockState(),
+                    getBlockState(),
+                    Block.UPDATE_ALL
+            );
+            level.getChunkSource().getLightEngine().checkBlock(getBlockPos());
+        }
+    }
+
     public void tick() {
-        if (getLevel().isClientSide)
+        if (getLevel().isClientSide) {
             return;
+        }
+
         if (rootdata != null) {
             if (getLevel().getBlockEntity(rootdata) instanceof RootBlockEntity) {
                 root = (RootBlockEntity) getLevel().getBlockEntity(rootdata);
@@ -68,6 +115,7 @@ public class FoamBlockEntity extends BlockEntity {
             }
             rootdata = null; // clean up!
         }
+
         if (root == null)
             return;
         if (!(getLevel().getBlockEntity(root.getBlockPos()) instanceof RootBlockEntity)) {
@@ -75,6 +123,8 @@ public class FoamBlockEntity extends BlockEntity {
             NetherMelt.getCore().Die(this, FoamDeathType.INTERUPTED);
             return;
         }
+
+
 
         if (getBlockState().getValue(FoamBlock.STAGE) < FoamBlock.MAX_STAGES) {
             ticks++;
@@ -119,14 +169,63 @@ public class FoamBlockEntity extends BlockEntity {
     }
 
     @Override
+    public void handleUpdateTag(CompoundTag tag) {
+        super.handleUpdateTag(tag);
+        updateClient();
+    }
+
+    @Override
+    public CompoundTag getUpdateTag() {
+        CompoundTag tag = new CompoundTag();
+
+        if (Absorbing != null) {
+            tag.put("Absorbing", NbtUtils.writeBlockState(Absorbing));
+        }
+
+        return tag;
+    }
+
+
+    @Override
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+        handleUpdateTag(pkt.getTag());
+    }
+
+    @Nullable
+    @Override
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+
+
+    @Nonnull
+    @Override
+    public IModelData getModelData() {
+        ModelDataMap.Builder builder = new ModelDataMap.Builder();
+
+        if (Absorbing != null) {
+            builder.withInitial(FoamBlockBakedModel.ABSORBING_STATE, Absorbing);
+        }
+
+        return builder.build();
+    }
+
+
+
+    @Override
     protected void saveAdditional(CompoundTag Tag) {
         if (root != null)
             Tag.put("Source", NbtUtils.writeBlockPos(root.getBlockPos()));
+        if (Absorbing != null)
+            Tag.put("Absorbing", NbtUtils.writeBlockState(Absorbing));
     }
 
     @Override
     public void load(CompoundTag Tag) {
         if (Tag.contains("Source"))
             rootdata = NbtUtils.readBlockPos(Tag.getCompound("Source"));
+        if (Tag.contains("Absorbing"))
+            Absorbing = NbtUtils.readBlockState(Tag.getCompound("Absorbing"));
     }
 }

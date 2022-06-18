@@ -4,10 +4,8 @@ import me.mangorage.nethermelt.blockentitys.FoamBlockEntity;
 import me.mangorage.nethermelt.blockentitys.RootBlockEntity;
 import me.mangorage.nethermelt.setup.Registry;
 import net.minecraft.core.BlockPos;
-import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -36,6 +34,8 @@ public class Core {
         CorrosiveResistantTags.add(ForgeRegistries.BLOCKS.tags().createTagKey(new ResourceLocation("forge", "ores")));
 
         CorrosiveResistant.add(Blocks.AIR.defaultBlockState());
+        CorrosiveResistant.add(Blocks.CAVE_AIR.defaultBlockState());
+        CorrosiveResistant.add(Blocks.VOID_AIR.defaultBlockState());
         CorrosiveResistant.add(Registry.BLOCK_FOAM.get().defaultBlockState());
         CorrosiveResistant.add(Registry.BLOCK_ROOT.get().defaultBlockState());
 
@@ -97,6 +97,7 @@ public class Core {
                 FoamBlockEntity entity = (FoamBlockEntity) level.getBlockEntity(pos);
 
                 entity.setRoot(root);
+                entity.setAbsorbing(state);
                 root.addFoam(pos);
                 return;
             }
@@ -106,8 +107,6 @@ public class Core {
             // Walls && Ceiling, not Floor! Maybe not floor
             level.setBlock(pos, Blocks.NETHERRACK.defaultBlockState(), Block.UPDATE_ALL);
         }
-
-
     }
 
     public void Die(FoamBlockEntity foam, FoamDeathType DeathType) {
