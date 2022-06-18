@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "nethermelt:block/foam/stages/3/face6",
+    "up": "nethermelt:block/foam/stages/3/face5",
+    "north": "nethermelt:block/foam/stages/3/face1",
+    "south": "nethermelt:block/foam/stages/3/face4",
+    "east": "nethermelt:block/foam/stages/3/face3",
+    "west": "nethermelt:block/foam/stages/3/face2",
+    "particle": "minecraft:block/netherrack"
+  }
+}

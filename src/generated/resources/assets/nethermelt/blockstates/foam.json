@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "stage=1": {
+      "model": "nethermelt:block/foam_1"
+    },
+    "stage=2": {
+      "model": "nethermelt:block/foam_2"
+    },
+    "stage=3": {
+      "model": "nethermelt:block/foam_3"
+    }
+  }
+}
