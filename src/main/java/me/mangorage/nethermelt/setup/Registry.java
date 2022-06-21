@@ -1,5 +1,6 @@
 package me.mangorage.nethermelt.setup;
 
+import me.mangorage.nethermelt.blockentitys.FallingBlockEntity;
 import me.mangorage.nethermelt.blockentitys.FoamBlockEntity;
 import me.mangorage.nethermelt.blockentitys.RootBlockEntity;
 import me.mangorage.nethermelt.blocks.*;
@@ -27,10 +28,14 @@ public class Registry {
     public static RegistryObject<DeadRootBlock> BLOCK_DEAD_ROOT = BLOCKS.register("deadroot", () -> new DeadRootBlock());
     public static RegistryObject<FoamBlock> BLOCK_FOAM = BLOCKS.register("foam", () -> new FoamBlock());
     public static RegistryObject<DeadFoamBlock> BLOCK_DEAD_FOAM = BLOCKS.register("deadfoam", () -> new DeadFoamBlock());
+    public static RegistryObject<FallingBlock> BLOCK_FALLING = BLOCKS.register("falling", () -> new FallingBlock());
+
 
     /** Block Entitys **/
     public static RegistryObject<BlockEntityType> BLOCKENTITY_ROOT = BLOCK_ENTITYS.register("root", () -> BlockEntityType.Builder.of(RootBlockEntity::new, BLOCK_ROOT.get()).build(null));
     public static RegistryObject<BlockEntityType> BLOCKENTITY_FOAM = BLOCK_ENTITYS.register("foam", () -> BlockEntityType.Builder.of(FoamBlockEntity::new, BLOCK_FOAM.get()).build(null));
+    public static RegistryObject<BlockEntityType> BLOCKENTITY_FALLING = BLOCK_ENTITYS.register("falling", () -> BlockEntityType.Builder.of(FallingBlockEntity::new, BLOCK_FALLING.get()).build(null));
+
 
     /** Items **/
     public static RegistryObject<Item> ITEM_ROOT = ITEMS.register("root", () -> new BlockItem(BLOCK_ROOT.get(), DefaultProperties.ITEM().stacksTo(64)));

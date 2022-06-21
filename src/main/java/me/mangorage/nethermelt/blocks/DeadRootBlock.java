@@ -21,16 +21,4 @@ public class DeadRootBlock extends Block {
     public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
         return 15;
     }
-
-    @Override
-    public void tick(BlockState state, ServerLevel level, BlockPos pos, Random random) {
-        BlockPos belowPos = pos.below(1);
-
-        if (level.getBlockState(belowPos) == Blocks.AIR.defaultBlockState()) {
-            // Move self down!!
-            level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
-            level.setBlock(belowPos, state, Block.UPDATE_ALL, 1);
-            level.scheduleTick(belowPos, level.getBlockState(belowPos).getBlock(), 10);
-        }
-    }
 }

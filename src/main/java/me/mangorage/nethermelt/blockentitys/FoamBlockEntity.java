@@ -22,6 +22,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
+import org.apache.logging.log4j.LogManager;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -83,6 +85,9 @@ public class FoamBlockEntity extends BlockEntity {
 
 
     public void setAbsorbing(BlockState State) {
+        if (State.getBlock() instanceof FoamBlock)
+            return;
+
         Absorbing = State;
         markUpdated();
     }
@@ -157,12 +162,16 @@ public class FoamBlockEntity extends BlockEntity {
                     NetherMelt.getCore().Grow(root, (ServerLevel) getLevel(), blockPos, getLevel().getBlockState(blockPos));
                 });
 
+                NetherMelt.getCore().Die((FoamBlockEntity) getLevel().getBlockEntity(getBlockPos()), FoamDeathType.DEFAULT);
+
+                /**
                 run = new Runnable() {
                     @Override
                     public void run() {
                         NetherMelt.getCore().Die((FoamBlockEntity) getLevel().getBlockEntity(getBlockPos()), FoamDeathType.DEFAULT);
                     }
                 };
+                 **/
 
             }
         }

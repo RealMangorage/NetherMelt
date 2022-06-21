@@ -55,11 +55,11 @@ public class RootBlockEntity extends BlockEntity {
         }
 
         if (init && ticks % 20 == 0) {
-            LogManager.getLogger().info("Foam: " + foams.size());
             if (foams.size() == 0 && activated) {
                 // Die
-                getLevel().setBlock(getBlockPos(), Registry.BLOCK_DEAD_ROOT.get().defaultBlockState(), Block.UPDATE_ALL);
-                getLevel().scheduleTick(getBlockPos(), getLevel().getBlockState(getBlockPos()).getBlock(), 1);
+                NetherMelt.getCore().Die(this);
+                // getLevel().setBlock(getBlockPos(), Registry.BLOCK_DEAD_ROOT.get().defaultBlockState(), Block.UPDATE_ALL);
+                // getLevel().scheduleTick(getBlockPos(), getLevel().getBlockState(getBlockPos()).getBlock(), 1);
             }
         }
     }

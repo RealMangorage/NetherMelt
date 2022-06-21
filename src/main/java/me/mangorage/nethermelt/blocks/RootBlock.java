@@ -6,8 +6,10 @@ import me.mangorage.nethermelt.util.DefaultProperties;
 import me.mangorage.nethermelt.util.Translatable;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -49,7 +51,10 @@ public class RootBlock extends Block implements EntityBlock {
         return state.getValue(ACTIVATED) ? 15 : 0;
     }
 
+
+
     @Override
+    @SuppressWarnings("deprecation")
     public InteractionResult use(BlockState state, Level level, BlockPos blockPos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
 
         if (level.isClientSide)
@@ -59,14 +64,17 @@ public class RootBlock extends Block implements EntityBlock {
 
         if (!state.getValue(ACTIVATED).booleanValue() && player.getItemInHand(hand).getItem().equals(Items.FLINT_AND_STEEL)) {
             if (level.dimension() != Level.NETHER) {
-                player.displayClientMessage(Translatable.ROOT_TOOLTIP_WRONG_DIMENSION.getComponent().withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
+                player.displayClientMessage(Translatable.ROOT_TOOLTIP_WRONG_DIMENSION.getComponent().withStyle(ChatFormatting.DARK_RED, ChatFormatting.BOLD), true);
                 return InteractionResult.FAIL;
             }
 
-            InteractionResult result = InteractionResult.CONSUME_PARTIAL;
-            player.getItemInHand(hand).setDamageValue(1);
+            ItemStack stack = player.getItemInHand(hand);
+
+            if (!player.isCreative())
+                stack.setDamageValue(stack.getDamageValue() - 1);
+
             level.setBlock(blockPos, state.setValue(ACTIVATED, true), Block.UPDATE_ALL); // logic continues on BE
-            return result;
+            return InteractionResult.CONSUME_PARTIAL;
         }
 
         return InteractionResult.FAIL;
