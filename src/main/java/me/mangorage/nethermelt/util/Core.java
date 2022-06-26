@@ -1,70 +1,117 @@
 package me.mangorage.nethermelt.util;
 
-import me.mangorage.nethermelt.blockentitys.FallingBlockEntity;
+import me.mangorage.nethermelt.NetherMelt;
 import me.mangorage.nethermelt.blockentitys.FoamBlockEntity;
 import me.mangorage.nethermelt.blockentitys.RootBlockEntity;
-import me.mangorage.nethermelt.blocks.FallingBlock;
+import me.mangorage.nethermelt.blocks.RootBlock;
 import me.mangorage.nethermelt.config.NetherMeltConfig;
+import me.mangorage.nethermelt.entities.ModFallingBlockEntity;
 import me.mangorage.nethermelt.setup.Registry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import net.minecraft.world.phys.AABB;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
 public class Core {
 
-    private final LockableBoolean Init = new LockableBoolean(false);
 
+    /**
+     TODO Change Type to Block.class for CorrosiveResistant and FallingBlacklist
+     */
+
+    private Logger logger = LogManager.getLogger(NetherMelt.MOD_ID + "/" + this.getClass());
+    private boolean loaded = false;
     private final ArrayList<BlockState> CorrosiveResistant = new ArrayList<>(); // Blocks that are Resistant to the Corrosive nature of NetherMelt's Foam
-    private final ArrayList<TagKey<Block>> CorrosiveResistantTags = new ArrayList<>();
-    private final int Range = 28;
+    private final ArrayList<BlockState> FallingBlacklist = new ArrayList<>(); // Blocks that cant be affected by Gravity!
+    private int Range = 28;
 
+
+    public boolean isLoaded() {
+        return loaded;
+    }
+
+    public void unLoad() {
+        loaded = false;
+
+        CorrosiveResistant.clear();
+        FallingBlacklist.clear();
+    }
     public void init() {
-        if (Init.isLocked())
-            new IllegalStateException("Core has been Initilized already! Cant re init");
-        Init.set(true);
-        Init.lock();
 
         // Startup Logic & Default Hard Coded Settings!
-        CorrosiveResistant.add(Registry.BLOCK_FOAM.get().defaultBlockState());
-        CorrosiveResistant.add(Registry.BLOCK_ROOT.get().defaultBlockState());
-        CorrosiveResistant.add(Registry.BLOCK_FALLING.get().defaultBlockState());
 
         NetherMeltConfig.RESISTANT.get().forEach(property -> {
-            String[] split = property.split(":");
+            loadConfig(ConfigType.RESISTANT, property);
+        });
 
-            if (split.length == 3) {
-                String Type = split[0];
-                String namespace = split[1];
-                String path = split[2];;
-                ResourceLocation rl = new ResourceLocation(namespace, path);
+        NetherMeltConfig.FALLING_BLOCKS.get().forEach(property -> {
+            loadConfig(ConfigType.FALLING, property);
+        });
 
-                if (Type.equals("block")) {
-                    if (ForgeRegistries.BLOCKS.containsKey(rl)) {
-                        CorrosiveResistant.add(ForgeRegistries.BLOCKS.getValue(rl).defaultBlockState());
-                    }
-                } else if (Type.equals("tag")) {
-                    CorrosiveResistantTags.add(ForgeRegistries.BLOCKS.tags().createTagKey(rl));
+        Range = NetherMeltConfig.RANGE.get();
+
+        loadConfig(ConfigType.RESISTANT, Registry.BLOCK_FOAM.get().defaultBlockState());
+        loadConfig(ConfigType.RESISTANT, Registry.BLOCK_ROOT.get().defaultBlockState());
+        loadConfig(ConfigType.RESISTANT, Blocks.CHEST.defaultBlockState());
+
+        loadConfig(ConfigType.FALLING, Registry.BLOCK_ROOT.get().defaultBlockState().setValue(RootBlock.ACTIVATED, true));
+    }
+
+    private void loadConfig(ConfigType type, String property) {
+        String[] split = property.split(":");
+
+        if (split.length == 3) {
+            String Type = split[0];
+            String namespace = split[1];
+            String path = split[2];
+            ResourceLocation rl = new ResourceLocation(namespace, path);
+
+            if (Type.equals("block")) {
+                if (ForgeRegistries.BLOCKS.containsKey(rl))
+                    loadConfig(type, ForgeRegistries.BLOCKS.getValue(rl).defaultBlockState());
+            }
+
+            if (Type.equals("tag")) {
+                var tagKey = ForgeRegistries.BLOCKS.tags().createTagKey(rl);
+
+                var known = ForgeRegistries.BLOCKS.tags().isKnownTagName(tagKey);
+
+                if (known) {
+                    ForgeRegistries.BLOCKS.tags().getTag(tagKey).forEach(Block -> {
+                        loadConfig(type, Block.defaultBlockState());
+                    });
                 }
+
 
             }
 
-        });
+        }
 
+    }
+
+    private void loadConfig(ConfigType type, BlockState state) {
+        logger.info("Loading Block: Config Type: " + type.name() + " Block: " + state.getBlock().getRegistryName());
+
+        switch (type) {
+            case RESISTANT -> {
+                if (!CorrosiveResistant.contains(state))
+                    CorrosiveResistant.add(state);
+            }
+            case FALLING -> {
+                if (!FallingBlacklist.contains(state))
+                    FallingBlacklist.add(state);
+            }
+        }
     }
 
     private double getDistanceXZ(BlockPos source, BlockPos foam) {
@@ -99,20 +146,11 @@ public class Core {
     }
 
     private boolean canCorrode(BlockState state) {
-        AtomicBoolean result = new AtomicBoolean(true);
-        Block block = state.getBlock();
+        return !CorrosiveResistant.contains(state.getBlock().defaultBlockState());
+    }
 
-        CorrosiveResistantTags.forEach(Tag -> {
-            if (ForgeRegistries.BLOCKS.tags().getTag(Tag).contains(state.getBlock())) {
-                result.set(false);
-            }
-        });
-
-        if (CorrosiveResistant.contains(block.defaultBlockState())) {
-            result.set(false);
-        }
-
-        return result.get();
+    private boolean canFall(BlockState state) {
+        return !FallingBlacklist.contains(state);
     }
 
     public void Grow(RootBlockEntity root, ServerLevel level, BlockPos pos, BlockState state) {
@@ -146,41 +184,39 @@ public class Core {
     }
 
     public void Die(RootBlockEntity root) {
-        // Die root
-
         Level level = root.getLevel();
         BlockPos rootPos = root.getBlockPos();
         Stream<BlockPos> posStream = BlockPos.betweenClosedStream(new BlockPos(rootPos.getX() - Range, rootPos.getY() - Range, rootPos.getZ() - Range), new BlockPos(rootPos.getX() + Range, rootPos.getY() + Range, rootPos.getZ() + Range));
 
         posStream.forEach(blockPos -> {
-
             if (isInRange(rootPos, blockPos)) {
-                if (!(level.getBlockState(blockPos).getBlock() instanceof AirBlock)) {
-                    BlockState state = level.getBlockState(blockPos);
+                BlockState state = level.getBlockState(blockPos);
 
-                    if (state == Registry.BLOCK_FALLING.get().defaultBlockState())
-                        return;
-                    if (canCorrode(state))
-                        return;
-
-                    level.setBlock(blockPos, Registry.BLOCK_FALLING.get().defaultBlockState(), Block.UPDATE_ALL);
-
-                    if (level.getBlockEntity(blockPos) instanceof FallingBlockEntity BE) {
-                        BE.setState(state);
-                    }
+                if (canFall(state)) {
+                    ModFallingBlockEntity.fall(level, blockPos, state);
                 }
             }
-
         });
 
-
-        level.setBlock(rootPos, Registry.BLOCK_FALLING.get().defaultBlockState(), Block.UPDATE_ALL);
-
-        if (level.getBlockEntity(rootPos) instanceof FallingBlockEntity BE) {
-            BE.setState(Registry.BLOCK_DEAD_ROOT.get().defaultBlockState());
+        int Charges = root.getCharges();
+        if (Charges <= 0) {
+            level.setBlock(rootPos, Registry.BLOCK_DEAD_ROOT.get().defaultBlockState(), Block.UPDATE_ALL);
+        } else {
+            level.setBlock(rootPos, root.getBlockState().setValue(RootBlock.ACTIVATED, false), Block.UPDATE_ALL); // Turn off the root! :D
+            if (level.getBlockEntity(rootPos) instanceof  RootBlockEntity BE)
+                BE.setCharges(Charges);
         }
 
+        ModFallingBlockEntity.fall(level, rootPos, level.getBlockState(rootPos));
     }
 
+    public enum FoamDeathType {
+        DEFAULT(),
+        INTERUPTED();
+    }
 
+    public enum ConfigType {
+        RESISTANT(),
+        FALLING();
+    }
 }

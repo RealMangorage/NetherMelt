@@ -4,6 +4,7 @@ import me.mangorage.nethermelt.NetherMelt;
 import me.mangorage.nethermelt.setup.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.client.model.generators.ModelProvider;
@@ -24,12 +25,12 @@ public class GenItemModelProvider extends ItemModelProvider {
 
         cubeAll(block.asItem().getRegistryName().getPath(), textureLocation);
     }
-
     @Override
     protected void registerModels() {
         BlockItem(Registry.BLOCK_ROOT.get(), "root");
         BlockItem(Registry.BLOCK_DEAD_ROOT.get(), "deadroot");
         BlockItem(Registry.BLOCK_FOAM.get(), "foam_1");
         BlockItem(Registry.BLOCK_DEAD_FOAM.get(), "deadfoam");
+        basicItem(Registry.ITEM_TRIGGER_REMOTE.get());
     }
 }

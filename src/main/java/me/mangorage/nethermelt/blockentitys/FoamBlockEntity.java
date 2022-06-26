@@ -2,9 +2,9 @@ package me.mangorage.nethermelt.blockentitys;
 
 import me.mangorage.nethermelt.NetherMelt;
 import me.mangorage.nethermelt.blocks.FoamBlock;
-import me.mangorage.nethermelt.render.FoamBlockBakedModel;
+import me.mangorage.nethermelt.client.render.FoamBlockBakedModel;
 import me.mangorage.nethermelt.setup.Registry;
-import me.mangorage.nethermelt.util.FoamDeathType;
+import me.mangorage.nethermelt.util.Core;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -18,11 +18,11 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
-import org.apache.logging.log4j.LogManager;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -36,7 +36,7 @@ public class FoamBlockEntity extends BlockEntity {
     private Random random = new Random();
     private RootBlockEntity root; // NBT
     private BlockPos rootdata; // Used for Loading purposes
-    private BlockState Absorbing = Blocks.NETHERRACK.defaultBlockState(); // Default: Netherrack
+    private BlockState Absorbing = Blocks.LAVA.defaultBlockState().setValue(LiquidBlock.LEVEL, 8);
     private int ticks = 0;
 
     private Runnable run = null;
@@ -125,7 +125,7 @@ public class FoamBlockEntity extends BlockEntity {
             return;
         if (!(getLevel().getBlockEntity(root.getBlockPos()) instanceof RootBlockEntity)) {
             root = null;
-            NetherMelt.getCore().Die(this, FoamDeathType.INTERUPTED);
+            NetherMelt.getCore().Die(this, Core.FoamDeathType.INTERUPTED);
             return;
         }
 
@@ -162,7 +162,7 @@ public class FoamBlockEntity extends BlockEntity {
                     NetherMelt.getCore().Grow(root, (ServerLevel) getLevel(), blockPos, getLevel().getBlockState(blockPos));
                 });
 
-                NetherMelt.getCore().Die((FoamBlockEntity) getLevel().getBlockEntity(getBlockPos()), FoamDeathType.DEFAULT);
+                NetherMelt.getCore().Die((FoamBlockEntity) getLevel().getBlockEntity(getBlockPos()), Core.FoamDeathType.DEFAULT);
 
                 /**
                 run = new Runnable() {

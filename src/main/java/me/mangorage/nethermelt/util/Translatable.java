@@ -1,5 +1,6 @@
 package me.mangorage.nethermelt.util;
 
+import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.network.chat.TranslatableComponent;
 
 public class Translatable {

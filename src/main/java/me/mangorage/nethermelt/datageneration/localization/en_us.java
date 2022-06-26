@@ -8,7 +8,7 @@ import net.minecraftforge.common.data.LanguageProvider;
 
 public class en_us extends LanguageProvider {
     public en_us(DataGenerator gen) {
-        super(gen, NetherMelt.MOD_ID, LanguageType.EN_US.get());
+        super(gen, NetherMelt.MOD_ID, "en_us");
     }
 
     @Override

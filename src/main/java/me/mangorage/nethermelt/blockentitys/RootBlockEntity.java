@@ -2,11 +2,11 @@ package me.mangorage.nethermelt.blockentitys;
 
 import me.mangorage.nethermelt.NetherMelt;
 import me.mangorage.nethermelt.blocks.RootBlock;
+import me.mangorage.nethermelt.config.NetherMeltConfig;
 import me.mangorage.nethermelt.setup.Registry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.apache.logging.log4j.LogManager;
@@ -14,8 +14,8 @@ import java.util.ArrayList;
 
 public class RootBlockEntity extends BlockEntity {
     private int ticks = 1;
-    private boolean init = false; // NBT
     private boolean activated = false; // NBT
+    private int CHARGES = NetherMeltConfig.DEFAULT_CHARGES.get();
     private ArrayList<BlockPos> foams = new ArrayList<>();
 
     public RootBlockEntity(BlockPos pos, BlockState state) {
@@ -28,11 +28,17 @@ public class RootBlockEntity extends BlockEntity {
             return;
         if (getLevel().isClientSide)
             return;
-        if (getBlockState().getValue(RootBlock.ACTIVATED) && !init) {
+        if (!getBlockState().getValue(RootBlock.ACTIVATED))
+            activated = false;
+        if (CHARGES <= 0 && !getBlockState().getValue(RootBlock.ACTIVATED)) {
+            LogManager.getLogger().info("Dieing! " + CHARGES);
+            NetherMelt.getCore().Die(this);
+            return;
+        }
+
+        if (getBlockState().getValue(RootBlock.ACTIVATED) && !activated) {
             ticks +=1;
             if (ticks % 20 == 0) {
-                init = true;
-
                 ArrayList<BlockPos> growto = new ArrayList<>();
 
                 growto.add(getBlockPos().above(1));
@@ -50,16 +56,14 @@ public class RootBlockEntity extends BlockEntity {
             }
         }
 
-        if (init) {
+        if (activated) {
             ticks +=1;
         }
 
-        if (init && ticks % 20 == 0) {
-            if (foams.size() == 0 && activated) {
+        if (activated && ticks % 20 == 0) {
+            if (foams.size() == 0 && getBlockState().getValue(RootBlock.ACTIVATED)) {
                 // Die
                 NetherMelt.getCore().Die(this);
-                // getLevel().setBlock(getBlockPos(), Registry.BLOCK_DEAD_ROOT.get().defaultBlockState(), Block.UPDATE_ALL);
-                // getLevel().scheduleTick(getBlockPos(), getLevel().getBlockState(getBlockPos()).getBlock(), 1);
             }
         }
     }
@@ -70,28 +74,38 @@ public class RootBlockEntity extends BlockEntity {
         }
     }
 
-    public void activated() {
-        activated = true;
-    }
-
     public void removeFoam(BlockPos pos) {
         foams.remove(pos);
     }
 
+    public int getCharges() {
+        return CHARGES;
+    }
+
+    public void setCharges(int amount) {
+        CHARGES = amount;
+    }
+
+    private void activated() {
+        activated = true;
+    }
+
+
+
     @Override
-    protected void saveAdditional(CompoundTag Tag) {
-        Tag.putBoolean("init", init);
+    public void saveAdditional(CompoundTag Tag) {
         Tag.putBoolean("activated", activated);
+        Tag.putInt("charges", CHARGES);
     }
 
     @Override
     public void load(CompoundTag Tag) {
-        if (Tag.contains("init")) {
-            init = Tag.getBoolean("init");
-        }
-
         if (Tag.contains("activated")) {
             activated = Tag.getBoolean("activated");
+        }
+
+        if (Tag.contains("charges")) {
+            CHARGES = Tag.getInt("charges");
         }
     }
 }
