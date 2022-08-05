@@ -1,20 +1,20 @@
 package me.mangorage.nethermelt.blocks;
 
+import me.mangorage.nethermelt.api.IResistant;
 import me.mangorage.nethermelt.blockentitys.RootBlockEntity;
-import me.mangorage.nethermelt.setup.Registry;
-import me.mangorage.nethermelt.util.DefaultProperties;
-import me.mangorage.nethermelt.util.Translatable;
+import me.mangorage.nethermelt.config.NetherMeltConfig;
+import me.mangorage.nethermelt.core.Registration;
+import me.mangorage.nethermelt.core.RootType;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -22,51 +22,62 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
-import org.stringtemplate.v4.ST;
+import net.minecraftforge.common.ForgeConfigSpec;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-public class RootBlock extends Block implements EntityBlock {
-    public static BooleanProperty ACTIVATED = BooleanProperty.create("activated");
+import static me.mangorage.nethermelt.core.Constants.BlockStateProperties.ACTIVATED;
+import static me.mangorage.nethermelt.core.Constants.Translatable.ROOT_TOOLTIP_WRONG_DIMENSION;
 
-    public RootBlock() {
-        super(DefaultProperties.BLOCK(Material.STONE).requiresCorrectToolForDrops().strength(100.0f).destroyTime(13.0f).sound(SoundType.NETHERRACK));
+public class RootBlock extends Block implements EntityBlock, IResistant {
+    private final RootType type;
+    private final Config config;
+
+    public RootBlock(RootType type) {
+        super(BlockBehaviour.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(100.0f).destroyTime(13.0f).sound(SoundType.NETHERRACK).lightLevel(state -> {
+            return state.getValue(ACTIVATED) ? 15 : 0;
+        }));
         registerDefaultState(this.defaultBlockState().setValue(ACTIVATED, false));
+        this.type = type;
+        this.config = new Config(type);
     }
 
+    public Config getConfig() {return config;}
+    public RootType getType() {return type;}
+
     private ItemStack getItem(int Charges) {
-        ItemStack stack = Registry.ITEM_ROOT.get().getDefaultInstance();
+        ItemStack stack = type.getLiveVariantItem().getDefaultInstance();
         CompoundTag tag = new CompoundTag();
         tag.putInt("charges", Charges);
         stack.setTag(tag);
 
         if (Charges == 0) {
-            return Registry.ITEM_DEAD_ROOT.get().getDefaultInstance();
+            return Registration.ITEM_DEAD_ROOT.get().getDefaultInstance();
         }
 
         return stack;
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> BUILDER) {
-        BUILDER.add(ACTIVATED);
+    public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
+        if (pLevel.getBlockEntity(pPos) instanceof RootBlockEntity RBE)
+            RBE.getCore().killAllFoam();
+
+        super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
     }
 
     @Override
-    public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
-        return state.getValue(ACTIVATED) ? 15 : 0;
-    }
-
-
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> BUILDER) {BUILDER.add(ACTIVATED);}
 
     @Override
     @SuppressWarnings("deprecation")
@@ -76,8 +87,9 @@ public class RootBlock extends Block implements EntityBlock {
             return InteractionResult.FAIL;
 
         if (!state.getValue(ACTIVATED).booleanValue() && player.getItemInHand(hand).getItem().equals(Items.FLINT_AND_STEEL)) {
-            if (level.dimension() != Level.NETHER) {
-                player.displayClientMessage(Translatable.ROOT_TOOLTIP_WRONG_DIMENSION.getComponent().withStyle(Style -> {
+            if (level.dimension() != type.getLevel()) {
+
+                player.displayClientMessage(new TranslatableComponent(ROOT_TOOLTIP_WRONG_DIMENSION.getKey(), type.getBlockDisplayText(), type.getDimDisplayText()).withStyle(Style -> {
                     Style = Style.withColor(ChatFormatting.DARK_RED);
                     Style = Style.withBold(true);
                     return Style;
@@ -103,6 +115,7 @@ public class RootBlock extends Block implements EntityBlock {
 
         return InteractionResult.FAIL;
     }
+
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> tBlockEntityType) {
@@ -111,7 +124,7 @@ public class RootBlock extends Block implements EntityBlock {
         }
         return (lvl, pos, blockState, t) -> {
             if (t instanceof RootBlockEntity BE) {
-                BE.tick();
+                BE.serverTick();
             }
         };
     }
@@ -121,7 +134,6 @@ public class RootBlock extends Block implements EntityBlock {
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new RootBlockEntity(pos, state);
     }
-
 
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @org.jetbrains.annotations.Nullable LivingEntity placer, ItemStack stack) {
@@ -144,10 +156,48 @@ public class RootBlock extends Block implements EntityBlock {
             RootBlockEntity root = (RootBlockEntity) blockentity;
             int charges = root.getCharges();
 
-            items.add(getItem(charges));
+            items.add(getItem(2020));
         }
 
         return items;
     }
+    public class Config {
+        private HashMap<NetherMeltConfig.Type, ForgeConfigSpec.ConfigValue<?>> config;
 
+        private RootType type;
+        private List<Block> RESISTANT_BLOCKS = new ArrayList<>(); // Blocks that cant be absorbed by foam blocks
+        private List<Block> FALLING_BLOCKS = new ArrayList<>(); // Blocks that can Fall!
+
+
+        private void load() {
+            config = NetherMeltConfig.getConfig(this.type);
+        }
+        public Integer getDefaultCharges() {
+            if (config == null) load();
+            ForgeConfigSpec.ConfigValue<Integer> CHARGES = ((ForgeConfigSpec.ConfigValue<Integer>) config.get(NetherMeltConfig.Type.CHARGES));
+            return CHARGES.get();
+        }
+
+        public Integer getDefaultRange() {
+            if (config == null) load();
+            ForgeConfigSpec.ConfigValue<Integer> RANGE = ((ForgeConfigSpec.ConfigValue<Integer>) config.get(NetherMeltConfig.Type.RANGE));
+            return RANGE.get();
+        }
+
+        public List<Block> getDefaultResistantBlocks() {
+            if (config == null) load();
+            return RESISTANT_BLOCKS;
+        }
+
+        public List<Block> getDefaultFallingBlocks() {
+            if (config == null) load();
+            return FALLING_BLOCKS;
+        }
+
+
+        private Config(RootType type) {
+            this.type = type;
+            load();
+        }
+    }
 }

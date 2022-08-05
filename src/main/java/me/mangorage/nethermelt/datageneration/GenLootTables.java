@@ -2,7 +2,8 @@ package me.mangorage.nethermelt.datageneration;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
-import me.mangorage.nethermelt.setup.Registry;
+import me.mangorage.nethermelt.core.Registration;
+import me.mangorage.nethermelt.core.RootType;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.loot.BlockLoot;
 import net.minecraft.data.loot.LootTableProvider;
@@ -44,15 +45,17 @@ public class GenLootTables extends LootTableProvider {
     private static class ModBlockLootTable extends BlockLoot {
         @Override
         protected void addTables() {
-            dropSelf(Registry.BLOCK_ROOT.get());
-            dropSelf(Registry.BLOCK_DEAD_ROOT.get());
-            dropSelf(Registry.BLOCK_DEAD_FOAM.get());
-            dropOther(Registry.BLOCK_FOAM.get(), Registry.ITEM_DEAD_FOAM.get());
+            dropSelf(RootType.NETHER.getLiveVariantBlock());
+            dropSelf(RootType.OVERWORLD.getLiveVariantBlock());
+
+            dropSelf(Registration.BLOCK_DEAD_ROOT.get());
+            dropSelf(Registration.BLOCK_DEAD_FOAM.get());
+            dropOther(Registration.BLOCK_FOAM.get(), Registration.ITEM_DEAD_FOAM.get());
         }
 
         @Override
         protected Iterable<Block> getKnownBlocks() {
-            return Registry.BLOCKS.getEntries().stream().map(RegistryObject::get)::iterator;
+            return Registration.BLOCKS.getEntries().stream().map(RegistryObject::get)::iterator;
         }
     }
 }

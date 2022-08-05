@@ -6,6 +6,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -23,6 +25,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.Random;
 
 public class ModFallingBlockRenderer extends EntityRenderer<ModFallingBlockEntity> {
+    public static class Provider implements EntityRendererProvider {
+        @Override
+        public EntityRenderer create(Context pContext) {
+            return new ModFallingBlockRenderer(pContext);
+        }
+    }
+
     public ModFallingBlockRenderer(EntityRendererProvider.Context pContext) {
         super(pContext);
     }

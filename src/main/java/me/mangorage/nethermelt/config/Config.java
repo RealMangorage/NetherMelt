@@ -5,7 +5,7 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 
 public class Config {
-
+    public static ForgeConfigSpec.Builder SERVER_BUILDER;
     public static void register() {
         registerServerConfigs();
         registerCommonConfigs();
@@ -14,21 +14,20 @@ public class Config {
 
     private static void registerClientConfigs() {
         ForgeConfigSpec.Builder CLIENT_BUILDER = new ForgeConfigSpec.Builder();
-        // PowergenConfig.registerClientConfig(CLIENT_BUILDER);
+
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, CLIENT_BUILDER.build());
     }
 
     private static void registerCommonConfigs() {
         ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();
-        // OresConfig.registerCommonConfig(COMMON_BUILDER);
-        NetherMeltConfig.registerCommonConfig(COMMON_BUILDER);
+
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, COMMON_BUILDER.build());
     }
 
     private static void registerServerConfigs() {
-        ForgeConfigSpec.Builder SERVER_BUILDER = new ForgeConfigSpec.Builder();
-        // GeneratorConfig.registerServerConfig(SERVER_BUILDER);
-        // PowergenConfig.registerServerConfig(SERVER_BUILDER);
+        SERVER_BUILDER = new ForgeConfigSpec.Builder();
+        NetherMeltConfig.registerCommonConfig(SERVER_BUILDER);
+
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, SERVER_BUILDER.build());
     }
 }

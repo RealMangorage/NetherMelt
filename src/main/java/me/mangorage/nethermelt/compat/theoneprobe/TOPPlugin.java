@@ -1,7 +1,6 @@
 package me.mangorage.nethermelt.compat.theoneprobe;
 
 import mcjty.theoneprobe.api.*;
-import me.mangorage.nethermelt.NetherMelt;
 import me.mangorage.nethermelt.blockentitys.RootBlockEntity;
 import me.mangorage.nethermelt.blocks.RootBlock;
 import net.minecraft.ChatFormatting;
@@ -12,8 +11,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-
 import java.util.function.Function;
+import static me.mangorage.nethermelt.core.Constants.MODID;
 
 public class TOPPlugin implements Function<ITheOneProbe, Void>, IProbeInfoProvider {
 
@@ -25,7 +24,7 @@ public class TOPPlugin implements Function<ITheOneProbe, Void>, IProbeInfoProvid
 
     @Override
     public ResourceLocation getID() {
-        return new ResourceLocation(NetherMelt.MOD_ID + ":top_support");
+        return new ResourceLocation(MODID + ":top_support");
     }
 
     @Override
