@@ -1,0 +1,70 @@
+package me.mangorage.nethermelt.core;
+
+import com.google.errorprone.annotations.Var;
+import me.mangorage.nethermelt.NetherMelt;
+import me.mangorage.nethermelt.blocks.FoamBlock;
+import me.mangorage.nethermelt.blocks.RootBlock;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.Material;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.RegistryObject;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
+
+//TODO: Rename this class to a better name!
+public class RegistryCollection {
+    public static HashMap<String, RegistryCollection> REGISTRED = new HashMap<>();
+
+    public static RegistryCollection getVariant(String ID) {
+        return REGISTRED.get(ID);
+    }
+
+    public static Set<String> getVariantIDs() {
+        return REGISTRED.keySet();
+    }
+
+    public final CollectionData COLLECTION_DATA;
+
+    public final RegistryObject<RootBlock> BLOCK_ROOT;
+    public final RegistryObject<Block> BLOCK_DEAD_ROOT;
+    public final RegistryObject<FoamBlock> BLOCK_FOAM;
+    public final RegistryObject<Block> BLOCK_DEAD_FOAM;
+
+    public final RegistryObject<Item> ITEM_ROOT;
+    public final RegistryObject<Item> ITEM_DEAD_ROOT;
+    public final RegistryObject<Item> ITEM_FOAM;
+    public final RegistryObject<Item> ITEM_DEAD_FOAM;
+
+
+    private RegistryCollection(DeferredRegister<Block> BLOCKS, DeferredRegister<Item> ITEMS, CollectionData data) {
+        // Flags
+        this.COLLECTION_DATA = data;
+        boolean isModLoaded = data.isModLoaded();
+        String name = data.getName();
+
+        // Blocks
+        this.BLOCK_ROOT = BLOCKS.register(name + "root", () -> new RootBlock(data.getID()));
+        this.BLOCK_DEAD_ROOT = BLOCKS.register(name + "deadroot", () -> new Block(BlockBehaviour.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(100.0f).destroyTime(5.0f).sound(SoundType.NETHERRACK).lightLevel(state -> 15)));
+        this.BLOCK_FOAM = BLOCKS.register(name + "foam", () -> new FoamBlock());
+        this.BLOCK_DEAD_FOAM = BLOCKS.register(name + "deadfoam", () -> new Block(BlockBehaviour.Properties.of(Material.SPONGE).lightLevel(state -> 10)));
+
+        // Items
+        this.ITEM_ROOT = ITEMS.register(name + "root", () -> new BlockItem(BLOCK_ROOT.get(), isModLoaded ? Registration.PROPERTIES_ITEM.get() : new Item.Properties()));
+        this.ITEM_DEAD_ROOT = ITEMS.register(name + "deadroot", () -> new BlockItem(BLOCK_DEAD_ROOT.get(), isModLoaded ? Registration.PROPERTIES_ITEM.get() : new Item.Properties()));
+        this.ITEM_FOAM = ITEMS.register(name + "foam", () -> new BlockItem(BLOCK_FOAM.get(), isModLoaded ? Registration.PROPERTIES_ITEM.get() : new Item.Properties()));
+        this.ITEM_DEAD_FOAM = ITEMS.register(name + "deadfoam", () -> new BlockItem(BLOCK_DEAD_FOAM.get(), isModLoaded ? Registration.PROPERTIES_ITEM.get() : new Item.Properties()));
+    }
+
+    public static RegistryCollection create(DeferredRegister<Block> RegistryBlocks, DeferredRegister RegistryItems, CollectionData data) {
+        RegistryCollection collection = new RegistryCollection(RegistryBlocks, RegistryItems, data);
+        REGISTRED.put(data.getID(), collection);
+        return collection;
+    }
+
+}

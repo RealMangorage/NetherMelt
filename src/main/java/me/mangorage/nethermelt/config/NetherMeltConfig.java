@@ -1,7 +1,9 @@
 package me.mangorage.nethermelt.config;
 
-import me.mangorage.nethermelt.core.RootType;
+import me.mangorage.nethermelt.core.CollectionData;
+import me.mangorage.nethermelt.core.RegistryCollection;
 import net.minecraftforge.common.ForgeConfigSpec;
+import org.lwjgl.system.CallbackI;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,7 +11,7 @@ import java.util.HashMap;
 
 public class NetherMeltConfig {
 
-    private static HashMap<RootType, HashMap<Type, ForgeConfigSpec.ConfigValue<?>>> CONFIGS = new HashMap<>();
+    private static HashMap<String, HashMap<Type, ForgeConfigSpec.ConfigValue<?>>> CONFIGS = new HashMap<>();
     public static void registerCommonConfig(ForgeConfigSpec.Builder SERVER_BUILDER) {
         SERVER_BUILDER.comment("Settings for Nethermelt Mod").push("nethermelt");
 
@@ -20,10 +22,12 @@ public class NetherMeltConfig {
 
 
 
-        Arrays.stream(RootType.values()).sequential().forEach(type -> {
-            if (type == RootType.UNKNOWN) return; // We dont need to do it for this lmao, its UNKNOWN for a reason
+        RegistryCollection.getVariantIDs().forEach(type -> {
+            RegistryCollection collection = RegistryCollection.getVariant(type);
+            CollectionData data = collection.COLLECTION_DATA;
 
-            SERVER_BUILDER.push(type.getName());
+            SERVER_BUILDER.push(data.getName());
+
             HashMap<Type, ForgeConfigSpec.ConfigValue<?>> CONFIG = new HashMap<>();
 
 
@@ -54,7 +58,7 @@ public class NetherMeltConfig {
 
     }
 
-    public static HashMap<Type, ForgeConfigSpec.ConfigValue<?>> getConfig(RootType type) {
+    public static HashMap<Type, ForgeConfigSpec.ConfigValue<?>> getConfig(String type) {
         return CONFIGS.get(type);
     }
 

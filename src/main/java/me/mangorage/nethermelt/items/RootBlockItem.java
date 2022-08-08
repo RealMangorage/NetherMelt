@@ -3,7 +3,7 @@ package me.mangorage.nethermelt.items;
 import me.mangorage.nethermelt.NetherMelt;
 import me.mangorage.nethermelt.blocks.RootBlock;
 import me.mangorage.nethermelt.core.Registration;
-import me.mangorage.nethermelt.core.RootType;
+import me.mangorage.nethermelt.core.RegistryCollection;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -23,10 +23,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class RootBlockItem extends BlockItem {
-    private final RootType type;
+    private final String type;
 
     public RootBlockItem(RootBlock block) {
-        super(block, ModList.get().isLoaded(block.getType().getModID()) ? Registration.PROPERTIES_ITEM.get().stacksTo(64).tab(NetherMelt.CreativeTab) : Registration.PROPERTIES_ITEM.get().stacksTo(64));
+        super(block, RegistryCollection.getVariant(block.getType()).COLLECTION_DATA.isModLoaded() ? Registration.PROPERTIES_ITEM.get().stacksTo(64).tab(NetherMelt.CreativeTab) : Registration.PROPERTIES_ITEM.get().stacksTo(64));
         type = block.getType();
     }
 
@@ -50,7 +50,7 @@ public class RootBlockItem extends BlockItem {
         var stack = player.getItemInHand(hand);
 
         if (stack != null) {
-            int charges = type.getLiveVariantBlock().getConfig().getDefaultCharges();
+            int charges = ((RootBlock) getBlock()).getConfig().getDefaultCharges();
 
             if (stack.hasTag() && !stack.getTag().contains("charges")) {
                 CompoundTag tag = stack.getTag();

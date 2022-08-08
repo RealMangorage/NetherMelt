@@ -1,7 +1,6 @@
-package me.mangorage.nethermelt.datageneration;
+package datageneration;
 
-import me.mangorage.nethermelt.datageneration.localization.en_us;
-import me.mangorage.nethermelt.NetherMelt;
+import datageneration.localization.en_us;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

@@ -1,7 +1,7 @@
-package me.mangorage.nethermelt.datageneration;
+package datageneration;
 
 import me.mangorage.nethermelt.core.Registration;
-import me.mangorage.nethermelt.core.RootType;
+import me.mangorage.nethermelt.core.RegistryCollection;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -12,7 +12,6 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import java.util.Objects;
 
 import static me.mangorage.nethermelt.core.Constants.MODID;
-
 public class GenItemModelProvider extends ItemModelProvider {
     public GenItemModelProvider(DataGenerator generator, ExistingFileHelper existingFileHelper) {
         super(generator, MODID, existingFileHelper);
@@ -28,11 +27,16 @@ public class GenItemModelProvider extends ItemModelProvider {
     }
     @Override
     protected void registerModels() {
-        BlockItem(RootType.NETHER.getLiveVariantBlock(), RootType.NETHER.getName());
+        RegistryCollection.getVariantIDs().forEach(variant -> {
+            RegistryCollection collection = RegistryCollection.getVariant(variant);
+            String name = collection.COLLECTION_DATA.getName();
 
-        BlockItem(Registration.BLOCK_DEAD_ROOT.get(), "deadroot");
-        BlockItem(Registration.BLOCK_FOAM.get(), "foam_1");
-        BlockItem(Registration.BLOCK_DEAD_FOAM.get(), "deadfoam");
+            BlockItem(collection.BLOCK_ROOT.get(), name + "root");
+            BlockItem(collection.BLOCK_DEAD_ROOT.get(), name + "deadroot");
+            BlockItem(collection.BLOCK_FOAM.get(), name + "foam");
+            BlockItem(collection.BLOCK_DEAD_FOAM.get(), name + "deadfoam");
+        });
+
         basicItem(Registration.ITEM_TRIGGER_REMOTE.get());
     }
 }

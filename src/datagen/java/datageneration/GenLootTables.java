@@ -1,9 +1,9 @@
-package me.mangorage.nethermelt.datageneration;
+package datageneration;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import me.mangorage.nethermelt.core.Registration;
-import me.mangorage.nethermelt.core.RootType;
+import me.mangorage.nethermelt.core.RegistryCollection;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.loot.BlockLoot;
 import net.minecraft.data.loot.LootTableProvider;
@@ -20,12 +20,10 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-
 public class GenLootTables extends LootTableProvider {
     public GenLootTables(DataGenerator pGenerator) {
         super(pGenerator);
     }
-
 
     @Override
     protected List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>>, LootContextParamSet>> getTables() {
@@ -33,24 +31,26 @@ public class GenLootTables extends LootTableProvider {
     }
 
     @Override
-    protected void validate(Map<ResourceLocation, LootTable> map, ValidationContext validationtracker) {
-
+    public String getName() {
+        return "NetherMelt Loot Table";
     }
 
     @Override
-    public String getName() {
-        return "NetherMelt Loot Table";
+    protected void validate(Map<ResourceLocation, LootTable> map, ValidationContext validationtracker) { // Dont remove!
+
     }
 
     private static class ModBlockLootTable extends BlockLoot {
         @Override
         protected void addTables() {
-            dropSelf(RootType.NETHER.getLiveVariantBlock());
-            dropSelf(RootType.OVERWORLD.getLiveVariantBlock());
+            RegistryCollection.getVariantIDs().forEach(variant -> {
+                RegistryCollection collection = RegistryCollection.getVariant(variant);
 
-            dropSelf(Registration.BLOCK_DEAD_ROOT.get());
-            dropSelf(Registration.BLOCK_DEAD_FOAM.get());
-            dropOther(Registration.BLOCK_FOAM.get(), Registration.ITEM_DEAD_FOAM.get());
+                dropSelf(collection.BLOCK_ROOT.get());
+                dropSelf(collection.BLOCK_DEAD_ROOT.get());
+                dropOther(collection.BLOCK_FOAM.get(), collection.BLOCK_DEAD_FOAM.get());
+                dropSelf(collection.BLOCK_DEAD_FOAM.get());
+            });
         }
 
         @Override

@@ -1,7 +1,6 @@
-package me.mangorage.nethermelt.datageneration;
+package datageneration;
 
-import me.mangorage.nethermelt.core.Registration;
-import me.mangorage.nethermelt.core.RootType;
+import me.mangorage.nethermelt.core.RegistryCollection;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -19,14 +18,11 @@ public class GenBlockStateProvider extends BlockStateProvider {
 
 
 
-    public void createFoamBlock() {
-        Block block = Registration.BLOCK_FOAM.get();
+    public void createFoamBlock(Block block) {
         ResourceLocation id = Objects.requireNonNull(block.getRegistryName());
         String namespace = id.getNamespace();
 
-
-
-        getVariantBuilder(Registration.BLOCK_FOAM.get()).forAllStates(state -> {
+        getVariantBuilder(block).forAllStates(state -> {
             int Stage = state.getValue(STAGE);
 
             ResourceLocation North = new ResourceLocation(namespace, ModelProvider.BLOCK_FOLDER + "/foam/stages/" + Stage + "/face1");
@@ -61,9 +57,12 @@ public class GenBlockStateProvider extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        createFoamBlock();
-        createBlockModel(RootType.NETHER.getLiveVariantBlock());
-        createBlockModel(Registration.BLOCK_DEAD_ROOT.get());
-        createBlockModel(Registration.BLOCK_DEAD_FOAM.get());
+        RegistryCollection.getVariantIDs().forEach(variant -> {
+            RegistryCollection collection = RegistryCollection.getVariant(variant);
+            createFoamBlock(collection.BLOCK_FOAM.get());
+            createBlockModel(collection.BLOCK_ROOT.get());
+            createBlockModel(collection.BLOCK_DEAD_FOAM.get());
+            createBlockModel(collection.BLOCK_DEAD_ROOT.get());
+        });
     }
 }

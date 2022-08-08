@@ -1,11 +1,11 @@
-package me.mangorage.nethermelt.datageneration;
+package datageneration;
 
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
 
 import java.util.function.Consumer;
-
+//TODO: Add Recipes
 public class GenRecipes extends RecipeProvider {
     public GenRecipes(DataGenerator generator) {
         super(generator);

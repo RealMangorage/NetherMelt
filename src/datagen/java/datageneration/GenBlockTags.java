@@ -1,8 +1,6 @@
-package me.mangorage.nethermelt.datageneration;
+package datageneration;
 
-import me.mangorage.nethermelt.NetherMelt;
-import me.mangorage.nethermelt.core.Registration;
-import me.mangorage.nethermelt.core.RootType;
+import me.mangorage.nethermelt.core.RegistryCollection;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.tags.BlockTags;
@@ -19,12 +17,13 @@ public class GenBlockTags extends BlockTagsProvider {
 
     @Override
     protected void addTags() {
-        tag(BlockTags.NEEDS_DIAMOND_TOOL)
-                .add(RootType.NETHER.getLiveVariantBlock())
-                .add(Registration.BLOCK_DEAD_ROOT.get());
-        tag(BlockTags.MINEABLE_WITH_PICKAXE)
-                .add(RootType.NETHER.getLiveVariantBlock())
-                .add(Registration.BLOCK_DEAD_ROOT.get());
+
+        RegistryCollection.getVariantIDs().forEach(variant -> {
+            RegistryCollection collection = RegistryCollection.getVariant(variant);
+
+            tag(BlockTags.NEEDS_DIAMOND_TOOL).add(collection.BLOCK_ROOT.get(), collection.BLOCK_DEAD_ROOT.get());
+            tag(BlockTags.MINEABLE_WITH_PICKAXE).add(collection.BLOCK_ROOT.get(), collection.BLOCK_DEAD_ROOT.get());
+        });
     }
 
     @Override

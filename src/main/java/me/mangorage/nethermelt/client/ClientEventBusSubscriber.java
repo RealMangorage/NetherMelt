@@ -3,6 +3,7 @@ package me.mangorage.nethermelt.client;
 import me.mangorage.nethermelt.client.render.FoamBlockRenderer;
 import me.mangorage.nethermelt.client.render.ModFallingBlockRenderer;
 import me.mangorage.nethermelt.core.Registration;
+import me.mangorage.nethermelt.core.RegistryCollection;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -11,7 +12,6 @@ import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import org.apache.logging.log4j.LogManager;
 
 import static me.mangorage.nethermelt.core.Constants.MODID;
 
@@ -21,13 +21,12 @@ public class ClientEventBusSubscriber {
 
     @SubscribeEvent
     public static void setup(FMLClientSetupEvent event) {
-        ItemBlockRenderTypes.setRenderLayer(Registration.BLOCK_FOAM.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setFancy(true);
-
+        RegistryCollection.getVariantIDs().forEach(variant -> {
+            ItemBlockRenderTypes.setRenderLayer(RegistryCollection.getVariant(variant).BLOCK_FOAM.get(), RenderType.cutout());
+        });
     }
     @SubscribeEvent
     public static void onEntityRendererEvent(EntityRenderersEvent.RegisterRenderers event) {
-        LogManager.getLogger().fatal("Registering ENTITY RENDER'S");
         event.registerBlockEntityRenderer((BlockEntityType) Registration.BLOCKENTITY_FOAM.get(), new FoamBlockRenderer.Provider());
         event.registerEntityRenderer(Registration.ENTITY_FALLINGBLOCK.get(), new ModFallingBlockRenderer.Provider());
     }

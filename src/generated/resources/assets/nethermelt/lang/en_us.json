@@ -1,8 +1,0 @@
-{
-  "block.nethermelt.deadfoam": "Dead Nether Foam",
-  "block.nethermelt.deadroot": "Dead Nether Foam Source",
-  "block.nethermelt.foam": "Nether Foam",
-  "block.nethermelt.netherroot": "Nether Foam Source",
-  "itemGroup.nethermelt": "Nether Melt Mod",
-  "tooltip.nethermelt.root.error.incorrectdimension": "%s Can only be activated in the %s!"
-}

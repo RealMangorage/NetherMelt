@@ -1,6 +1,7 @@
 
 package me.mangorage.nethermelt.core;
 
+import com.google.errorprone.annotations.Var;
 import me.mangorage.nethermelt.blockentitys.FoamBlockEntity;
 import me.mangorage.nethermelt.blockentitys.RootBlockEntity;
 import me.mangorage.nethermelt.blocks.*;
@@ -12,6 +13,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -45,26 +47,19 @@ public class Registration {
 
 
     //================================================
-    // BLOCKS
+    // BLOCKS & ITEMS
     //================================================
-    public static RegistryObject<RootBlock> BLOCK_ROOT_NETHER = BLOCKS.register(RootType.NETHER.getName(), () -> new RootBlock(RootType.NETHER));
-    public static RegistryObject<RootBlock> BLOCK_ROOT_OVERWORLD = BLOCKS.register(RootType.OVERWORLD.getName(), () -> new RootBlock(RootType.OVERWORLD));
-    public static RegistryObject<FoamBlock> BLOCK_FOAM = BLOCKS.register("foam", () -> new FoamBlock());
-    public static RegistryObject<Block> BLOCK_DEAD_ROOT = BLOCKS.register("deadroot", () -> new Block(BlockBehaviour.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(100.0f).destroyTime(5.0f).sound(SoundType.NETHERRACK).lightLevel(state -> 15)));
-    public static RegistryObject<Block> BLOCK_DEAD_FOAM = BLOCKS.register("deadfoam", () -> new Block(BlockBehaviour.Properties.of(Material.SPONGE).lightLevel(state -> 10)));
+    public static RegistryCollection NETHER = RegistryCollection.create(BLOCKS, ITEMS, CollectionData.create()
+            .setName("nether")
+            .setModID("minecraft")
+            .addDimensions(Level.NETHER)
+            .setID("nether")
+            .build()
+    );
 
 
 
 
-    //================================================
-    // ITEMS
-    //================================================
-
-    public static RegistryObject<RootBlockItem> ITEM_ROOT_NETHER = ITEMS.register(RootType.NETHER.getName(), () -> new RootBlockItem(BLOCK_ROOT_NETHER.get()));
-    public static RegistryObject<RootBlockItem> ITEM_ROOT_OVERWORLD = ITEMS.register(RootType.OVERWORLD.getName(), () -> new RootBlockItem(BLOCK_ROOT_OVERWORLD.get()));
-    public static RegistryObject<BlockItem> ITEM_DEAD_ROOT = ITEMS.register("deadroot", () -> new BlockItem(BLOCK_DEAD_ROOT.get(), PROPERTIES_ITEM.get().stacksTo(64)));
-    public static RegistryObject<BlockItem> ITEM_FOAM = ITEMS.register("foam", () -> new BlockItem(BLOCK_FOAM.get(), PROPERTIES_ITEM.get().stacksTo(64)));
-    public static RegistryObject<BlockItem> ITEM_DEAD_FOAM = ITEMS.register("deadfoam", () -> new BlockItem(BLOCK_DEAD_FOAM.get(), PROPERTIES_ITEM.get().stacksTo(64)));
     public static RegistryObject<Item> ITEM_TRIGGER_REMOTE = ITEMS.register("remote", () -> new TriggerRemoteItem());
 
 
@@ -78,10 +73,11 @@ public class Registration {
     //================================================
     // Block Entities
     //================================================
-    public static RegistryObject<BlockEntityType<FoamBlockEntity>> BLOCKENTITY_FOAM = BLOCK_ENTITYS.register("foam", () -> BlockEntityType.Builder.of(FoamBlockEntity::new, BLOCK_FOAM.get()).build(null));
+    public static RegistryObject<BlockEntityType<FoamBlockEntity>> BLOCKENTITY_FOAM = BLOCK_ENTITYS.register("foam", () -> BlockEntityType.Builder.of(FoamBlockEntity::new,
+            NETHER.BLOCK_FOAM.get()
+    ).build(null));
     public static RegistryObject<BlockEntityType<RootBlockEntity>> BLOCKENTITY_ROOT = BLOCK_ENTITYS.register("root", () -> BlockEntityType.Builder.of(RootBlockEntity::new,
-            BLOCK_ROOT_NETHER.get(),
-            BLOCK_ROOT_OVERWORLD.get()
+            NETHER.BLOCK_ROOT.get()
     ).build(null));
 
 
@@ -91,8 +87,8 @@ public class Registration {
     public static void init() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         BLOCKS.register(bus);
-        BLOCK_ENTITYS.register(bus);
         ITEMS.register(bus);
+        BLOCK_ENTITYS.register(bus);
         ENTITYS.register(bus);
     }
 

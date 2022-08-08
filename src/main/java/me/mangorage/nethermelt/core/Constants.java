@@ -21,8 +21,6 @@ public class Constants {
         public static final Translatable
                 ROOT_TOOLTIP_WRONG_DIMENSION = new Translatable("tooltip.nethermelt.root.error.incorrectdimension");
 
-
-
         Translatable(String key) {
             this.key = key;
             this.component = new TranslatableComponent(key);

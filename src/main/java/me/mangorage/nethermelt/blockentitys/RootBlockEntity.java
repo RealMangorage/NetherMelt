@@ -1,15 +1,14 @@
 package me.mangorage.nethermelt.blockentitys;
 
 import me.mangorage.nethermelt.api.IResistant;
-import me.mangorage.nethermelt.NetherMelt;
 import me.mangorage.nethermelt.blocks.RootBlock;
 import me.mangorage.nethermelt.core.Registration;
+import me.mangorage.nethermelt.core.RegistryCollection;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.ArrayList;
@@ -72,7 +71,7 @@ public class RootBlockEntity extends BlockEntity {
                         grown = false;
                         ticks = 1;
                     } else {
-                        getLevel().setBlock(getBlockPos(), Registration.BLOCK_DEAD_ROOT.get().defaultBlockState(), Block.UPDATE_ALL);
+                        getLevel().setBlock(getBlockPos(), RegistryCollection.getVariant(getBlock().getType()).BLOCK_DEAD_ROOT.get().defaultBlockState(), Block.UPDATE_ALL);
                     }
                 }
             }
@@ -101,8 +100,12 @@ public class RootBlockEntity extends BlockEntity {
     public int getCharges() {return CHARGES;}
     public void setCharges(int amount) {CHARGES = amount;}
 
+    public RootBlock getBlock() {
+        return (RootBlock) getBlockState().getBlock();
+    }
+
     public class Core  {
-        List<FoamBlockEntity> FOAM = new ArrayList<>();
+        private List<FoamBlockEntity> FOAM = new ArrayList<>();
         private int Range = 0;
 
         public Core() {
@@ -144,14 +147,12 @@ public class RootBlockEntity extends BlockEntity {
             return result.get();
         }
 
-        public boolean canCorrode(BlockPos pos) {
+        private boolean canCorrode(BlockPos pos) {
             if (getLevel().getBlockState(pos).getBlock() instanceof IResistant IR)
                 return IR.isResistant() ? false : true;
 
             List<Block> blocks = new ArrayList<>();
 
-            blocks.add(Registration.BLOCK_ROOT_NETHER.get());
-            blocks.add((Registration.BLOCK_FOAM.get()));
             blocks.add(Blocks.AIR);
             blocks.add(Blocks.CAVE_AIR);
             blocks.add(Blocks.VOID_AIR);
@@ -168,7 +169,7 @@ public class RootBlockEntity extends BlockEntity {
             posList.forEach(pos -> {
                 if (getLevel().getBlockEntity(pos) instanceof FoamBlockEntity FBE)
                     FBE.interupted = true;
-                getLevel().setBlock(pos, Registration.BLOCK_DEAD_FOAM.get().defaultBlockState(), Block.UPDATE_ALL);
+                getLevel().setBlock(pos, RegistryCollection.getVariant(getBlock().getType()).BLOCK_DEAD_FOAM.get().defaultBlockState(), Block.UPDATE_ALL);
             });
 
             FOAM.clear();
@@ -187,17 +188,24 @@ public class RootBlockEntity extends BlockEntity {
         public void Grow(BlockPos pos) {
             if (isInRange(getBlockPos(), pos) && canCorrode(pos)) {
                 BlockState oldState = getLevel().getBlockState(pos);
+                BlockState newState = RegistryCollection.getVariant(getBlock().getType()).BLOCK_FOAM.get().defaultBlockState();
 
-                getLevel().setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+                getLevel().setBlock(pos, newState, Block.UPDATE_ALL);
 
-                level.setBlock(pos, Registration.BLOCK_FOAM.get().defaultBlockState(), Block.UPDATE_ALL);
-
-                if (level.getBlockEntity(pos) instanceof FoamBlockEntity FBE) {
+                if (getLevel().getBlockEntity(pos) instanceof FoamBlockEntity FBE) {
                     FBE.setAbsorbing(oldState);
                     FBE.setRoot(getBlockPos());
                     add(FBE);
                 }
             }
+        }
+
+        public Integer getFoamCount() {
+            return FOAM.size();
+        }
+
+        public Integer getRange() {
+            return Range;
         }
 
     }

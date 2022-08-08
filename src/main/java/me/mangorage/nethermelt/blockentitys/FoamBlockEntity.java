@@ -1,5 +1,6 @@
 package me.mangorage.nethermelt.blockentitys;
 
+import me.mangorage.nethermelt.NetherMelt;
 import me.mangorage.nethermelt.blocks.FoamBlock;
 import me.mangorage.nethermelt.core.Registration;
 import net.minecraft.core.BlockPos;

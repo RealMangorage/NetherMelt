@@ -3,8 +3,7 @@ package me.mangorage.nethermelt.blocks;
 import me.mangorage.nethermelt.api.IResistant;
 import me.mangorage.nethermelt.blockentitys.RootBlockEntity;
 import me.mangorage.nethermelt.config.NetherMeltConfig;
-import me.mangorage.nethermelt.core.Registration;
-import me.mangorage.nethermelt.core.RootType;
+import me.mangorage.nethermelt.core.RegistryCollection;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -40,10 +39,10 @@ import static me.mangorage.nethermelt.core.Constants.BlockStateProperties.ACTIVA
 import static me.mangorage.nethermelt.core.Constants.Translatable.ROOT_TOOLTIP_WRONG_DIMENSION;
 
 public class RootBlock extends Block implements EntityBlock, IResistant {
-    private final RootType type;
+    private final String type;
     private final Config config;
 
-    public RootBlock(RootType type) {
+    public RootBlock(String type) {
         super(BlockBehaviour.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(100.0f).destroyTime(13.0f).sound(SoundType.NETHERRACK).lightLevel(state -> {
             return state.getValue(ACTIVATED) ? 15 : 0;
         }));
@@ -53,16 +52,16 @@ public class RootBlock extends Block implements EntityBlock, IResistant {
     }
 
     public Config getConfig() {return config;}
-    public RootType getType() {return type;}
+    public String getType() {return type;}
 
     private ItemStack getItem(int Charges) {
-        ItemStack stack = type.getLiveVariantItem().getDefaultInstance();
+        ItemStack stack = RegistryCollection.getVariant(getType()).ITEM_ROOT.get().getDefaultInstance();
         CompoundTag tag = new CompoundTag();
         tag.putInt("charges", Charges);
         stack.setTag(tag);
 
-        if (Charges == 0) {
-            return Registration.ITEM_DEAD_ROOT.get().getDefaultInstance();
+        if (Charges <= 0) {
+            return RegistryCollection.getVariant(getType()).ITEM_DEAD_ROOT.get().getDefaultInstance();
         }
 
         return stack;
@@ -70,6 +69,8 @@ public class RootBlock extends Block implements EntityBlock, IResistant {
 
     @Override
     public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
+        if (pNewState.getBlock() instanceof RootBlock) return;
+
         if (pLevel.getBlockEntity(pPos) instanceof RootBlockEntity RBE)
             RBE.getCore().killAllFoam();
 
@@ -87,9 +88,8 @@ public class RootBlock extends Block implements EntityBlock, IResistant {
             return InteractionResult.FAIL;
 
         if (!state.getValue(ACTIVATED).booleanValue() && player.getItemInHand(hand).getItem().equals(Items.FLINT_AND_STEEL)) {
-            if (level.dimension() != type.getLevel()) {
-
-                player.displayClientMessage(new TranslatableComponent(ROOT_TOOLTIP_WRONG_DIMENSION.getKey(), type.getBlockDisplayText(), type.getDimDisplayText()).withStyle(Style -> {
+            if (!RegistryCollection.getVariant(getType()).COLLECTION_DATA.getDimensions().contains(level.dimension())) {
+                player.displayClientMessage(new TranslatableComponent(ROOT_TOOLTIP_WRONG_DIMENSION.getKey(), "Nether Placeholder", "DIM Placeholder").withStyle(Style -> {
                     Style = Style.withColor(ChatFormatting.DARK_RED);
                     Style = Style.withBold(true);
                     return Style;
@@ -149,14 +149,12 @@ public class RootBlock extends Block implements EntityBlock, IResistant {
     @Override
     public List<ItemStack> getDrops(BlockState pState, LootContext.Builder pBuilder) {
         List<ItemStack> items = new ArrayList<>();
-
-
         BlockEntity blockentity = pBuilder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
+
         if (blockentity instanceof RootBlockEntity) {
             RootBlockEntity root = (RootBlockEntity) blockentity;
             int charges = root.getCharges();
-
-            items.add(getItem(2020));
+            items.add(getItem(charges));
         }
 
         return items;
@@ -164,7 +162,7 @@ public class RootBlock extends Block implements EntityBlock, IResistant {
     public class Config {
         private HashMap<NetherMeltConfig.Type, ForgeConfigSpec.ConfigValue<?>> config;
 
-        private RootType type;
+        private String type;
         private List<Block> RESISTANT_BLOCKS = new ArrayList<>(); // Blocks that cant be absorbed by foam blocks
         private List<Block> FALLING_BLOCKS = new ArrayList<>(); // Blocks that can Fall!
 
@@ -195,7 +193,7 @@ public class RootBlock extends Block implements EntityBlock, IResistant {
         }
 
 
-        private Config(RootType type) {
+        private Config(String type) {
             this.type = type;
             load();
         }

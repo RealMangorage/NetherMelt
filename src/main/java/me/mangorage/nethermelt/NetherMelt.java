@@ -2,10 +2,8 @@ package me.mangorage.nethermelt;
 
 import me.mangorage.nethermelt.compat.theoneprobe.TOPPlugin;
 import me.mangorage.nethermelt.config.Config;
-import me.mangorage.nethermelt.datageneration.DataGenerators;
 import me.mangorage.nethermelt.core.Registration;
 import me.mangorage.nethermelt.core.Constants;
-import me.mangorage.nethermelt.core.RootType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
@@ -19,6 +17,8 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+//TODO: FIX DATA GENERATION
+//TODO: ADD MORE TYPES OF BLOCKS!
 @Mod(Constants.MODID)
 public class NetherMelt {
     public static final Logger logger = LogManager.getLogger(NetherMelt.class);
@@ -29,14 +29,13 @@ public class NetherMelt {
     public static CreativeModeTab CreativeTab = new CreativeModeTab("nethermelt") {
         @Override
         public ItemStack makeIcon() {
-            return (RootType.NETHER.getLiveVariantItem()).getDefaultInstance();
+            return Registration.NETHER.ITEM_ROOT.get().getDefaultInstance();
         }
     };
 
     public NetherMelt() {
         Registration.init();
 
-        ForgeEventBus.addListener(DataGenerators::gatherData);
         ForgeEventBus.register(this);
     }
 

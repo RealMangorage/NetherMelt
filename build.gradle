@@ -25,6 +25,36 @@ java {
     toolchain.languageVersion = JavaLanguageVersion.of(17)
 }
 
+sourceSets {
+
+    api {
+        resources.srcDirs = []
+        compileClasspath += configurations.getByName("minecraft")
+    }
+
+    datagen {
+        compileClasspath += configurations.getByName("minecraft")
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+        compileClasspath += sourceSets.api.output
+        runtimeClasspath += sourceSets.api.output
+    }
+
+    main {
+        java {
+            srcDir "src/main/java"
+        }
+
+        resources {
+            srcDir "src/generated/resources"
+        }
+
+        compileClasspath += sourceSets.api.output
+        runtimeClasspath += sourceSets.api.output
+    }
+
+}
+
 minecraft {
     mappings channel: "${mapping_type}", version: "${mapping_version}"
 
@@ -34,11 +64,13 @@ minecraft {
 
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-
+            args '--uuid', '4518dce4-1888-41f8-b4b5-c1de8144f028'
+            args '--username', 'crazymangorage'
 
             mods {
                 foamblock {
                     source sourceSets.main
+                    source sourceSets.api
                 }
             }
         }
@@ -52,6 +84,7 @@ minecraft {
             mods {
                 foamblock {
                     source sourceSets.main
+                    source sourceSets.api
                 }
             }
         }
@@ -67,13 +100,13 @@ minecraft {
             mods {
                 foamblock {
                     source sourceSets.main
+                    source sourceSets.api
+                    source sourceSets.datagen
                 }
             }
         }
     }
 }
-
-sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
     maven {
@@ -128,7 +161,6 @@ dependencies {
     runtimeOnly(fg.deobf("curse.maven:everlastabilities-248353:3768481"))
 }
 
-// Example for how to get properties into the manifest for reading at runtime.
 jar {
     manifest {
         attributes([
