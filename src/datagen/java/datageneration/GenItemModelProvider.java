@@ -29,12 +29,14 @@ public class GenItemModelProvider extends ItemModelProvider {
     protected void registerModels() {
         RegistryCollection.getVariantIDs().forEach(variant -> {
             RegistryCollection collection = RegistryCollection.getVariant(variant);
-            String name = collection.COLLECTION_DATA.getName();
+            String name = collection.PROPERTIES.getName();
 
-            BlockItem(collection.BLOCK_ROOT.get(), name + "root");
-            BlockItem(collection.BLOCK_DEAD_ROOT.get(), name + "deadroot");
             BlockItem(collection.BLOCK_FOAM.get(), name + "foam");
-            BlockItem(collection.BLOCK_DEAD_FOAM.get(), name + "deadfoam");
+            if (variant.equals("nether")) {
+                BlockItem(collection.BLOCK_ROOT.get(), name + "root");
+                BlockItem(collection.BLOCK_DEAD_ROOT.get(), name + "deadroot");
+                BlockItem(collection.BLOCK_DEAD_FOAM.get(), name + "deadfoam");
+            }
         });
 
         basicItem(Registration.ITEM_TRIGGER_REMOTE.get());

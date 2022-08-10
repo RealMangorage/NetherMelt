@@ -17,7 +17,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.fml.ModList;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -26,7 +25,7 @@ public class RootBlockItem extends BlockItem {
     private final String type;
 
     public RootBlockItem(RootBlock block) {
-        super(block, RegistryCollection.getVariant(block.getType()).COLLECTION_DATA.isModLoaded() ? Registration.PROPERTIES_ITEM.get().stacksTo(64).tab(NetherMelt.CreativeTab) : Registration.PROPERTIES_ITEM.get().stacksTo(64));
+        super(block, RegistryCollection.getVariant(block.getType()).PROPERTIES.isModLoaded() ? Registration.PROPERTIES_ITEM.get().stacksTo(64).tab(NetherMelt.CreativeTab) : Registration.PROPERTIES_ITEM.get().stacksTo(64));
         type = block.getType();
     }
 

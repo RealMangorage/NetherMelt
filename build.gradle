@@ -53,6 +53,16 @@ sourceSets {
         runtimeClasspath += sourceSets.api.output
     }
 
+    example {
+        java {
+            srcDir "src/example/java"
+        }
+
+        compileClasspath += configurations.getByName("minecraft")
+        compileClasspath += sourceSets.api.output
+        runtimeClasspath += sourceSets.api.output
+        compileClasspath += sourceSets.main.output
+    }
 }
 
 minecraft {
@@ -72,6 +82,10 @@ minecraft {
                     source sourceSets.main
                     source sourceSets.api
                 }
+
+                example {
+                    source sourceSets.example
+                }
             }
         }
 
@@ -85,6 +99,10 @@ minecraft {
                 foamblock {
                     source sourceSets.main
                     source sourceSets.api
+                }
+
+                example {
+                    source sourceSets.example
                 }
             }
         }
@@ -140,7 +158,8 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:pipez-443900:3760255")
 
 
-    runtimeOnly(fg.deobf("curse.maven:refinedstorage-243076:3712882"))
+    // runtimeOnly(fg.deobf("curse.maven:refinedstorage-243076:3712882"))
+    compileOnly(fg.deobf("curse.maven:refinedstorage-243076:3712882"))
 
     // FTB Chunks
     runtimeOnly(fg.deobf("curse.maven:architectury-forge-419699:3781711"))

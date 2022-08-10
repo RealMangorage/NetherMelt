@@ -151,6 +151,8 @@ public class RootBlockEntity extends BlockEntity {
             if (getLevel().getBlockState(pos).getBlock() instanceof IResistant IR)
                 return IR.isResistant() ? false : true;
 
+
+
             List<Block> blocks = new ArrayList<>();
 
             blocks.add(Blocks.AIR);

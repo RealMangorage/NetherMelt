@@ -23,8 +23,11 @@ import static me.mangorage.nethermelt.core.Constants.BlockStateProperties.VISIBL
 public class FoamBlock extends Block implements EntityBlock, IResistant {
     private static int[] LIGHT_LEVELS = {2, 6, 8, 15};
 
-    public FoamBlock() {
+    private String variantType;
+
+    public FoamBlock(String variantType) {
         super(BlockBehaviour.Properties.copy(Blocks.GLASS).lightLevel(state -> {return LIGHT_LEVELS[state.getValue(STAGE)-1];}));
+        this.variantType = variantType;
         registerDefaultState(defaultBlockState().setValue(VISIBLE, false));
     }
 
@@ -70,6 +73,10 @@ public class FoamBlock extends Block implements EntityBlock, IResistant {
             return RenderShape.MODEL;
 
         return RenderShape.INVISIBLE;
+    }
+
+    public String getVariantType() {
+        return variantType;
     }
 
 }

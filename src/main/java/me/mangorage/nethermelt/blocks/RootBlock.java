@@ -88,7 +88,7 @@ public class RootBlock extends Block implements EntityBlock, IResistant {
             return InteractionResult.FAIL;
 
         if (!state.getValue(ACTIVATED).booleanValue() && player.getItemInHand(hand).getItem().equals(Items.FLINT_AND_STEEL)) {
-            if (!RegistryCollection.getVariant(getType()).COLLECTION_DATA.getDimensions().contains(level.dimension())) {
+            if (!RegistryCollection.getVariant(getType()).PROPERTIES.getDimensions().contains(level.dimension())) {
                 player.displayClientMessage(new TranslatableComponent(ROOT_TOOLTIP_WRONG_DIMENSION.getKey(), "Nether Placeholder", "DIM Placeholder").withStyle(Style -> {
                     Style = Style.withColor(ChatFormatting.DARK_RED);
                     Style = Style.withBold(true);

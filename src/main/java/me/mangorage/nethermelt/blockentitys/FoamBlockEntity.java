@@ -2,7 +2,9 @@ package me.mangorage.nethermelt.blockentitys;
 
 import me.mangorage.nethermelt.NetherMelt;
 import me.mangorage.nethermelt.blocks.FoamBlock;
+import me.mangorage.nethermelt.blocks.RootBlock;
 import me.mangorage.nethermelt.core.Registration;
+import me.mangorage.nethermelt.core.RegistryCollection;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -10,10 +12,12 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -30,7 +34,21 @@ public class FoamBlockEntity extends BlockEntity {
     private int ticks = 0;
     public FoamBlockEntity(BlockPos pos, BlockState state) {
         super(Registration.BLOCKENTITY_FOAM.get(), pos, state);
+
+        Block block = getBlockState().getBlock();
+        if (block instanceof FoamBlock RB) {
+            String variant = RB.getVariantType();
+            RegistryCollection collection = RegistryCollection.getVariant(variant);
+
+            if (collection != null && collection.PROPERTIES.getDefaultAbsorbing() != null) {
+                Absorbing = collection.PROPERTIES.getDefaultAbsorbing();
+            }
+
+        }
+
+
     }
+
 
     @Override
     public void onLoad() {

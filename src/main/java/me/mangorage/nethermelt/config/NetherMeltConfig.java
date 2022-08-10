@@ -1,12 +1,9 @@
 package me.mangorage.nethermelt.config;
 
-import me.mangorage.nethermelt.core.CollectionData;
 import me.mangorage.nethermelt.core.RegistryCollection;
 import net.minecraftforge.common.ForgeConfigSpec;
-import org.lwjgl.system.CallbackI;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class NetherMeltConfig {
@@ -24,7 +21,7 @@ public class NetherMeltConfig {
 
         RegistryCollection.getVariantIDs().forEach(type -> {
             RegistryCollection collection = RegistryCollection.getVariant(type);
-            CollectionData data = collection.COLLECTION_DATA;
+            RegistryCollection.Properties data = collection.PROPERTIES;
 
             SERVER_BUILDER.push(data.getName());
 

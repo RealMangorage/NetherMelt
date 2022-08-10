@@ -45,12 +45,16 @@ public class GenBlockStateProvider extends BlockStateProvider {
         String namespace = id.getNamespace();
         String name = id.getPath();
 
-        getVariantBuilder(block).forAllStates(state -> {
-            String modelName = name;
-            ResourceLocation textureLocation = new ResourceLocation(namespace, ModelProvider.BLOCK_FOLDER + "/" + modelName);
-            BlockModelBuilder model = models().cubeAll(modelName, textureLocation);
-            return ConfiguredModel.builder().modelFile(model).build();
-        });
+        try {
+            getVariantBuilder(block).forAllStates(state -> {
+                String modelName = name;
+                ResourceLocation textureLocation = new ResourceLocation(namespace, ModelProvider.BLOCK_FOLDER + "/" + modelName);
+                BlockModelBuilder model = models().cubeAll(modelName, textureLocation);
+                return ConfiguredModel.builder().modelFile(model).build();
+            });
+        } catch (Exception e) {
+            // Whatever !
+        }
     }
 
 
@@ -60,9 +64,11 @@ public class GenBlockStateProvider extends BlockStateProvider {
         RegistryCollection.getVariantIDs().forEach(variant -> {
             RegistryCollection collection = RegistryCollection.getVariant(variant);
             createFoamBlock(collection.BLOCK_FOAM.get());
-            createBlockModel(collection.BLOCK_ROOT.get());
-            createBlockModel(collection.BLOCK_DEAD_FOAM.get());
-            createBlockModel(collection.BLOCK_DEAD_ROOT.get());
+            if (variant.equals("nether")) {
+                createBlockModel(collection.BLOCK_ROOT.get());
+                createBlockModel(collection.BLOCK_DEAD_FOAM.get());
+                createBlockModel(collection.BLOCK_DEAD_ROOT.get());
+            }
         });
     }
 }
