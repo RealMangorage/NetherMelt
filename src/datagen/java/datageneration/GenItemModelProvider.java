@@ -1,7 +1,7 @@
 package datageneration;
 
-import me.mangorage.nethermelt.core.Registration;
-import me.mangorage.nethermelt.core.RegistryCollection;
+import me.mangorage.nethermelt.common.core.Registration;
+import me.mangorage.nethermelt.common.core.RegistryCollection;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -11,7 +11,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 
 import java.util.Objects;
 
-import static me.mangorage.nethermelt.core.Constants.MODID;
+import static me.mangorage.nethermelt.common.core.Constants.MODID;
 public class GenItemModelProvider extends ItemModelProvider {
     public GenItemModelProvider(DataGenerator generator, ExistingFileHelper existingFileHelper) {
         super(generator, MODID, existingFileHelper);

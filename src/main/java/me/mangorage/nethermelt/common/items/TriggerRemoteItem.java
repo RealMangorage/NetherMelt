@@ -1,7 +1,7 @@
-package me.mangorage.nethermelt.items;
+package me.mangorage.nethermelt.common.items;
 
-import me.mangorage.nethermelt.blocks.RootBlock;
-import me.mangorage.nethermelt.core.Registration;
+import me.mangorage.nethermelt.common.blocks.RootBlock;
+import me.mangorage.nethermelt.common.core.Registration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -13,7 +13,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
-import static me.mangorage.nethermelt.core.Constants.BlockStateProperties.ACTIVATED;
+import static me.mangorage.nethermelt.common.core.Constants.BlockStateProperties.ACTIVATED;
 
 public class TriggerRemoteItem extends Item {
     public TriggerRemoteItem() {

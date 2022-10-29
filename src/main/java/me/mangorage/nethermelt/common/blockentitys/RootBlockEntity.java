@@ -1,10 +1,13 @@
-package me.mangorage.nethermelt.blockentitys;
+package me.mangorage.nethermelt.common.blockentitys;
 
+import me.mangorage.nethermelt.NetherMelt;
 import me.mangorage.nethermelt.api.IResistant;
-import me.mangorage.nethermelt.blocks.RootBlock;
-import me.mangorage.nethermelt.core.Registration;
-import me.mangorage.nethermelt.core.RegistryCollection;
+import me.mangorage.nethermelt.api.ITickable;
+import me.mangorage.nethermelt.common.blocks.RootBlock;
+import me.mangorage.nethermelt.common.core.Registration;
+import me.mangorage.nethermelt.common.core.RegistryCollection;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -14,10 +17,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import static me.mangorage.nethermelt.core.Constants.BlockStateProperties.ACTIVATED;
+import static me.mangorage.nethermelt.common.core.Constants.BlockStateProperties.ACTIVATED;
 
-public class RootBlockEntity extends BlockEntity {
+public class RootBlockEntity extends BlockEntity implements ITickable.Server {
     private int ticks = 1;
     private int CHARGES = -1;
     private Core core;
@@ -46,33 +50,38 @@ public class RootBlockEntity extends BlockEntity {
 
     }
 
+    public void Deactivate() {
+        if (CHARGES > 0) {
+            getLevel().setBlock(getBlockPos(), getBlockState().setValue(ACTIVATED, false), Block.UPDATE_ALL);
+            grown = false;
+        } else {
+            getLevel().setBlock(getBlockPos(), RegistryCollection.getVariant(getBlock().getType()).BLOCK_DEAD_ROOT.get().defaultBlockState(), Block.UPDATE_ALL);
+        }
+    }
+
+    @Override
     public void serverTick() {
         ticks++;
+
         if (ticks % 20 == 0) {
             if (getBlockState().getValue(ACTIVATED)) {
                 if (!grown) {
-                    ArrayList<BlockPos> growto = new ArrayList<>();
-
-                    growto.add(getBlockPos().above(1));
-                    growto.add(getBlockPos().below(1));
-                    growto.add(getBlockPos().north(1));
-                    growto.add(getBlockPos().south(1));
-                    growto.add(getBlockPos().east(1));
-                    growto.add(getBlockPos().west(1));
-
-                    growto.forEach(Blockpos -> {
-                        getCore().Grow(Blockpos);
-                    });
-
-                    grown = true;
-                } else if (getCore().FOAM.isEmpty()) {
-                    if (CHARGES > 0) {
-                        getLevel().setBlock(getBlockPos(), getBlockState().setValue(ACTIVATED, false), Block.UPDATE_ALL);
-                        grown = false;
-                        ticks = 1;
-                    } else {
-                        getLevel().setBlock(getBlockPos(), RegistryCollection.getVariant(getBlock().getType()).BLOCK_DEAD_ROOT.get().defaultBlockState(), Block.UPDATE_ALL);
+                    BlockPos pos = getBlockPos();
+                    AtomicBoolean Spreaded = new AtomicBoolean(false);
+                    for (Direction direction : Direction.values()) {
+                        boolean result = getCore().Grow(pos.relative(direction, 1));
+                        if (result)
+                            Spreaded.set(true);
                     }
+
+                    if (!Spreaded.get()) {
+                        Deactivate();
+                    } else {
+                        grown = true;
+                    }
+                    
+                } else if (getCore().FOAM.isEmpty()) {
+                    Deactivate();
                 }
             }
         }
@@ -185,9 +194,11 @@ public class RootBlockEntity extends BlockEntity {
         public void Die(FoamBlockEntity foam) {
             FOAM.remove(foam);
             getLevel().setBlock(foam.getBlockPos(), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+            if (FOAM.size() == 0)
+                Deactivate();
         }
 
-        public void Grow(BlockPos pos) {
+        public boolean Grow(BlockPos pos) {
             if (isInRange(getBlockPos(), pos) && canCorrode(pos)) {
                 BlockState oldState = getLevel().getBlockState(pos);
                 BlockState newState = RegistryCollection.getVariant(getBlock().getType()).BLOCK_FOAM.get().defaultBlockState();
@@ -199,7 +210,9 @@ public class RootBlockEntity extends BlockEntity {
                     FBE.setRoot(getBlockPos());
                     add(FBE);
                 }
+                return true;
             }
+            return false;
         }
 
         public Integer getFoamCount() {

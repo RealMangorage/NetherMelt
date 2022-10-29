@@ -1,6 +1,6 @@
-package me.mangorage.nethermelt.config;
+package me.mangorage.nethermelt.common.config;
 
-import me.mangorage.nethermelt.core.RegistryCollection;
+import me.mangorage.nethermelt.common.core.RegistryCollection;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.ArrayList;

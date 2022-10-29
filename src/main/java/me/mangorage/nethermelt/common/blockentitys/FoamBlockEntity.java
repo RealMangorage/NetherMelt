@@ -1,10 +1,9 @@
-package me.mangorage.nethermelt.blockentitys;
+package me.mangorage.nethermelt.common.blockentitys;
 
-import me.mangorage.nethermelt.NetherMelt;
-import me.mangorage.nethermelt.blocks.FoamBlock;
-import me.mangorage.nethermelt.blocks.RootBlock;
-import me.mangorage.nethermelt.core.Registration;
-import me.mangorage.nethermelt.core.RegistryCollection;
+import me.mangorage.nethermelt.api.ITickable;
+import me.mangorage.nethermelt.common.blocks.FoamBlock;
+import me.mangorage.nethermelt.common.core.Registration;
+import me.mangorage.nethermelt.common.core.RegistryCollection;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -12,20 +11,18 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-import static me.mangorage.nethermelt.core.Constants.BlockStateProperties.STAGE;
-import static me.mangorage.nethermelt.core.Constants.MAX_STAGES;
+import static me.mangorage.nethermelt.common.core.Constants.BlockStateProperties.STAGE;
+import static me.mangorage.nethermelt.common.core.Constants.MAX_STAGES;
 
-public class FoamBlockEntity extends BlockEntity {
+public class FoamBlockEntity extends BlockEntity implements ITickable.Server {
     private float[] chance = new float[]{0.1f, 0f, 0f, 0f, 0.2f, 0.0f, 0f, 0.3f, 0f, 0f, 0f, 0.4f, 0.5f};
     private Random random = new Random();
     private BlockPos root; // NBT
@@ -116,10 +113,12 @@ public class FoamBlockEntity extends BlockEntity {
         }
     }
 
+    @Override
     public void serverTick() {
         if (getRoot() == null || getRoot().getCore() == null) {
             return;
         }
+
         ticks++;
 
         if (ticks % 20 == 0) {

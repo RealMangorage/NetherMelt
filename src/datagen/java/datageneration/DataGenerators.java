@@ -2,13 +2,12 @@ package datageneration;
 
 import datageneration.localization.en_us;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
-import static me.mangorage.nethermelt.core.Constants.MODID;
+import static me.mangorage.nethermelt.common.core.Constants.MODID;
 
 
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD)

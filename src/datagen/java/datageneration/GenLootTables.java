@@ -2,8 +2,8 @@ package datageneration;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
-import me.mangorage.nethermelt.core.Registration;
-import me.mangorage.nethermelt.core.RegistryCollection;
+import me.mangorage.nethermelt.common.core.Registration;
+import me.mangorage.nethermelt.common.core.RegistryCollection;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.loot.BlockLoot;
 import net.minecraft.data.loot.LootTableProvider;

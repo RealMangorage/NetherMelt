@@ -1,9 +1,10 @@
-package me.mangorage.nethermelt.blocks;
+package me.mangorage.nethermelt.common.blocks;
 
 import me.mangorage.nethermelt.api.IResistant;
-import me.mangorage.nethermelt.blockentitys.RootBlockEntity;
-import me.mangorage.nethermelt.config.NetherMeltConfig;
-import me.mangorage.nethermelt.core.RegistryCollection;
+import me.mangorage.nethermelt.common.blockentitys.RootBlockEntity;
+import me.mangorage.nethermelt.api.ITickable;
+import me.mangorage.nethermelt.common.config.NetherMeltConfig;
+import me.mangorage.nethermelt.common.core.RegistryCollection;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -35,8 +36,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static me.mangorage.nethermelt.core.Constants.BlockStateProperties.ACTIVATED;
-import static me.mangorage.nethermelt.core.Constants.Translatable.ROOT_TOOLTIP_WRONG_DIMENSION;
+import static me.mangorage.nethermelt.common.core.Constants.BlockStateProperties.ACTIVATED;
+import static me.mangorage.nethermelt.common.core.Constants.Translatable.ROOT_TOOLTIP_WRONG_DIMENSION;
 
 public class RootBlock extends Block implements EntityBlock, IResistant {
     private final String type;
@@ -119,14 +120,7 @@ public class RootBlock extends Block implements EntityBlock, IResistant {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> tBlockEntityType) {
-        if (level.isClientSide()) {
-            return null;
-        }
-        return (lvl, pos, blockState, t) -> {
-            if (t instanceof RootBlockEntity BE) {
-                BE.serverTick();
-            }
-        };
+        return state.getValue(ACTIVATED) ? ITickable::tick : null;
     }
 
     @Nullable

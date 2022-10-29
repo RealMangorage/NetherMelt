@@ -1,4 +1,4 @@
-package me.mangorage.nethermelt.config;
+package me.mangorage.nethermelt.common.config;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.ModLoadingContext;

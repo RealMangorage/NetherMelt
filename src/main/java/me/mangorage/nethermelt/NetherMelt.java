@@ -1,15 +1,12 @@
 package me.mangorage.nethermelt;
 
 import me.mangorage.nethermelt.api.IResistantBlocksProvider;
-import me.mangorage.nethermelt.compat.theoneprobe.TOPPlugin;
-import me.mangorage.nethermelt.config.Config;
-import me.mangorage.nethermelt.core.Registration;
-import me.mangorage.nethermelt.core.Constants;
+import me.mangorage.nethermelt.common.compat.theoneprobe.TOPPlugin;
+import me.mangorage.nethermelt.common.config.Config;
+import me.mangorage.nethermelt.common.core.Registration;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -24,9 +21,8 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-import static me.mangorage.nethermelt.core.Constants.MODID;
+import static me.mangorage.nethermelt.common.core.Constants.MODID;
 
 //TODO: FIX DATA GENERATION
 //TODO: ADD MORE TYPES OF BLOCKS!

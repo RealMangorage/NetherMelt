@@ -2,8 +2,6 @@
   "replace": false,
   "values": [
     "nethermelt:netherroot",
-    "nethermelt:netherdeadroot",
-    "nethermelt:overworldroot",
-    "nethermelt:overworlddeadroot"
+    "nethermelt:netherdeadroot"
   ]
 }

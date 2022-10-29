@@ -1,8 +1,8 @@
-package me.mangorage.nethermelt.compat.theoneprobe;
+package me.mangorage.nethermelt.common.compat.theoneprobe;
 
 import mcjty.theoneprobe.api.*;
-import me.mangorage.nethermelt.blockentitys.RootBlockEntity;
-import me.mangorage.nethermelt.blocks.RootBlock;
+import me.mangorage.nethermelt.common.blockentitys.RootBlockEntity;
+import me.mangorage.nethermelt.common.blocks.RootBlock;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -12,8 +12,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.function.Function;
 
-import static me.mangorage.nethermelt.core.Constants.BlockStateProperties.ACTIVATED;
-import static me.mangorage.nethermelt.core.Constants.MODID;
+import static me.mangorage.nethermelt.common.core.Constants.BlockStateProperties.ACTIVATED;
+import static me.mangorage.nethermelt.common.core.Constants.MODID;
 
 public class TOPPlugin implements Function<ITheOneProbe, Void>, IProbeInfoProvider {
 

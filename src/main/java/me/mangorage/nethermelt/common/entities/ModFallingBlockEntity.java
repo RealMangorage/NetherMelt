@@ -1,4 +1,4 @@
-package me.mangorage.nethermelt.entities;
+package me.mangorage.nethermelt.common.entities;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;

@@ -1,9 +1,13 @@
-package me.mangorage.nethermelt.core;
+package me.mangorage.nethermelt.common.core;
 
-import me.mangorage.nethermelt.blocks.FoamBlock;
-import me.mangorage.nethermelt.blocks.RootBlock;
+import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import me.mangorage.nethermelt.NetherMelt;
+import me.mangorage.nethermelt.common.blocks.FoamBlock;
+import me.mangorage.nethermelt.common.blocks.RootBlock;
+import net.minecraft.commands.arguments.blocks.BlockInput;
+import net.minecraft.commands.arguments.blocks.BlockStateArgument;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
@@ -15,11 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.RegistryObject;
-
 import java.util.*;
-
-import static me.mangorage.nethermelt.core.Registration.BLOCKS;
-import static me.mangorage.nethermelt.core.Registration.ITEMS;
 
 //TODO: Rename this class to a better name!
 public class RegistryCollection {
@@ -53,16 +53,16 @@ public class RegistryCollection {
         String ID = data.getID();
 
         // Blocks
-        this.BLOCK_ROOT = BLOCKS.register(name + "root", () -> new RootBlock(ID));
-        this.BLOCK_DEAD_ROOT = BLOCKS.register(name + "deadroot", () -> new Block(BlockBehaviour.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(100.0f).destroyTime(5.0f).sound(SoundType.NETHERRACK).lightLevel(state -> 15)));
-        this.BLOCK_FOAM = BLOCKS.register(name + "foam", () -> new FoamBlock(ID));
-        this.BLOCK_DEAD_FOAM = BLOCKS.register(name + "deadfoam", () -> new Block(BlockBehaviour.Properties.of(Material.SPONGE).lightLevel(state -> 10)));
+        this.BLOCK_ROOT = Registration.BLOCKS.register(name + "root", () -> new RootBlock(ID));
+        this.BLOCK_DEAD_ROOT = Registration.BLOCKS.register(name + "deadroot", () -> new Block(BlockBehaviour.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(100.0f).destroyTime(5.0f).sound(SoundType.NETHERRACK).lightLevel(state -> 15)));
+        this.BLOCK_FOAM = Registration.BLOCKS.register(name + "foam", () -> new FoamBlock(ID));
+        this.BLOCK_DEAD_FOAM = Registration.BLOCKS.register(name + "deadfoam", () -> new Block(BlockBehaviour.Properties.of(Material.SPONGE).lightLevel(state -> 10)));
 
         // Items
-        this.ITEM_ROOT = ITEMS.register(name + "root", () -> new BlockItem(BLOCK_ROOT.get(), isModLoaded ? Registration.PROPERTIES_ITEM.get() : new Item.Properties()));
-        this.ITEM_DEAD_ROOT = ITEMS.register(name + "deadroot", () -> new BlockItem(BLOCK_DEAD_ROOT.get(), isModLoaded ? Registration.PROPERTIES_ITEM.get() : new Item.Properties()));
-        this.ITEM_FOAM = ITEMS.register(name + "foam", () -> new BlockItem(BLOCK_FOAM.get(), isModLoaded ? Registration.PROPERTIES_ITEM.get() : new Item.Properties()));
-        this.ITEM_DEAD_FOAM = ITEMS.register(name + "deadfoam", () -> new BlockItem(BLOCK_DEAD_FOAM.get(), isModLoaded ? Registration.PROPERTIES_ITEM.get() : new Item.Properties()));
+        this.ITEM_ROOT = Registration.ITEMS.register(name + "root", () -> new BlockItem(BLOCK_ROOT.get(), isModLoaded ? Registration.PROPERTIES_ITEM.get() : new Item.Properties()));
+        this.ITEM_DEAD_ROOT = Registration.ITEMS.register(name + "deadroot", () -> new BlockItem(BLOCK_DEAD_ROOT.get(), isModLoaded ? Registration.PROPERTIES_ITEM.get() : new Item.Properties()));
+        this.ITEM_FOAM = Registration.ITEMS.register(name + "foam", () -> new BlockItem(BLOCK_FOAM.get(), isModLoaded ? Registration.PROPERTIES_ITEM.get() : new Item.Properties()));
+        this.ITEM_DEAD_FOAM = Registration.ITEMS.register(name + "deadfoam", () -> new BlockItem(BLOCK_DEAD_FOAM.get(), isModLoaded ? Registration.PROPERTIES_ITEM.get() : new Item.Properties()));
     }
 
     public static RegistryCollection create(Properties data) {
@@ -78,7 +78,8 @@ public class RegistryCollection {
 
         private String MODID;
         private String Name;
-        private BlockState defaultAbsorbing = Blocks.AIR.defaultBlockState();
+        private String defaultAbsorbingString = "";
+        private BlockState defaultAbsorbingState = Blocks.SAND.defaultBlockState();
 
         public Properties(String ID) {
             this.ID = ID;
@@ -99,8 +100,14 @@ public class RegistryCollection {
             return this;
         }
 
+
         public Properties setDefaultAbsorbing(BlockState blockState) {
-            this.defaultAbsorbing = blockState;
+            this.defaultAbsorbingState = blockState;
+            return this;
+        }
+
+        public Properties setDefaultAbsorbing(String blockState) {
+            this.defaultAbsorbingString = blockState;
             return this;
         }
 
@@ -122,14 +129,24 @@ public class RegistryCollection {
         }
 
         public BlockState getDefaultAbsorbing() {
-            return defaultAbsorbing;
+            if (this.defaultAbsorbingString.length() > 0) {
+                BlockInput state = null;
+
+                try {
+                    state = BlockStateArgument.block().parse(new StringReader(this.defaultAbsorbingString));
+                } catch (CommandSyntaxException e) {
+                    // Nonthing! Maybe
+                    NetherMelt.logger.info("ISSUE + " + this.defaultAbsorbingString);
+                }
+
+                return state != null ? state.getState() : Blocks.SAND.defaultBlockState();
+            }
+
+            return defaultAbsorbingState;
         }
 
         public boolean isModLoaded() {
             return ModList.get().isLoaded(getModID());
         }
-
-
-
     }
 }

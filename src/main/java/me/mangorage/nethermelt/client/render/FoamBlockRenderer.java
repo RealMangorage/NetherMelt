@@ -6,8 +6,8 @@ import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3d;
 import com.mojang.math.Vector3f;
-import me.mangorage.nethermelt.blockentitys.FoamBlockEntity;
-import me.mangorage.nethermelt.core.Constants;
+import me.mangorage.nethermelt.common.blockentitys.FoamBlockEntity;
+import me.mangorage.nethermelt.common.core.Constants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -57,20 +57,23 @@ public class FoamBlockRenderer implements BlockEntityRenderer<FoamBlockEntity> {
             FluidStack fluidStack = new FluidStack(fluidState.getType(), fluidState.getAmount());
             stack.pushPose();
             //stack.translate(0.01f, 0.01f, 0.01f);
-            stack.scale(1f, 1f, 1f);
             renderCubeUsingQuads(fluidStack, partialtick, stack, buffer, packedLight, packedOverlay);
             stack.popPose();
         } else {
             stack.pushPose();
             //stack.translate(0.01f, 0.01f, 0.01f);
-            stack.scale(1f, 1f, 1f);
             dispatcher.renderSingleBlock(state, stack, buffer, packedLight, packedOverlay, EmptyModelData.INSTANCE);
             stack.popPose();
         }
 
         stack.pushPose();
-        stack.scale(1.02f,1.02f,1.02f);
-        stack.translate(-0.01f, -0.01f, -0.01f);
+
+        stack.translate(.5, .5, .5);
+        float scale = 1.0076F;
+        stack.scale(scale, scale, scale);
+        stack.translate(-.5, -.5, -.5);
+
+
         dispatcher.renderSingleBlock(FBE.getBlockState().setValue(VISIBLE, true), stack, buffer, packedLight, packedOverlay, EmptyModelData.INSTANCE);
         stack.popPose();
     }

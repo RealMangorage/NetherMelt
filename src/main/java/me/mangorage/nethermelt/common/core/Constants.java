@@ -1,6 +1,7 @@
-package me.mangorage.nethermelt.core;
+package me.mangorage.nethermelt.common.core;
 
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.BundleItem;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 

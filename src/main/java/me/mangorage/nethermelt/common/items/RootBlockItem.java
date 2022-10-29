@@ -1,9 +1,9 @@
-package me.mangorage.nethermelt.items;
+package me.mangorage.nethermelt.common.items;
 
 import me.mangorage.nethermelt.NetherMelt;
-import me.mangorage.nethermelt.blocks.RootBlock;
-import me.mangorage.nethermelt.core.Registration;
-import me.mangorage.nethermelt.core.RegistryCollection;
+import me.mangorage.nethermelt.common.blocks.RootBlock;
+import me.mangorage.nethermelt.common.core.Registration;
+import me.mangorage.nethermelt.common.core.RegistryCollection;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;

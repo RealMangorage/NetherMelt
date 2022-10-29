@@ -3,7 +3,7 @@ package datageneration.localization;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
 
-import static me.mangorage.nethermelt.core.Constants.MODID;
+import static me.mangorage.nethermelt.common.core.Constants.MODID;
 // TODO: FINISH en_us LanguageProvider
 public class en_us extends LanguageProvider {
     public en_us(DataGenerator gen) {
