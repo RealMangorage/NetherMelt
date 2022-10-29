@@ -50,13 +50,13 @@ public class GenBlockStateProvider extends BlockStateProvider {
             getVariantBuilder(block).forAllStates(state -> {
                 if (state.hasProperty(Constants.BlockStateProperties.ACTIVATED) && state.getValue(Constants.BlockStateProperties.ACTIVATED)) {
                     String modelName = name;
-                    ResourceLocation textureLocation = new ResourceLocation(namespace, ModelProvider.BLOCK_FOLDER + "/variants/" + variant + "/activated_" + modelName);
+                    ResourceLocation textureLocation = new ResourceLocation(namespace, ModelProvider.BLOCK_FOLDER + "/variants/" + variant + "/activated_" + modelName.replace(variant, ""));
                     BlockModelBuilder model = models().cubeAll(modelName, textureLocation);
                     return ConfiguredModel.builder().modelFile(model).build();
                 }
 
                 String modelName = name;
-                ResourceLocation textureLocation = new ResourceLocation(namespace, ModelProvider.BLOCK_FOLDER + "/variants/" + variant + "/" + modelName);
+                ResourceLocation textureLocation = new ResourceLocation(namespace, ModelProvider.BLOCK_FOLDER + "/variants/" + variant + "/" + modelName.replace(variant, ""));
                 BlockModelBuilder model = models().cubeAll(modelName, textureLocation);
                 return ConfiguredModel.builder().modelFile(model).build();
             });
