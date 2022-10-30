@@ -1,6 +1,5 @@
 package me.mangorage.nethermelt.common.blocks;
 
-import me.mangorage.nethermelt.api.IResistant;
 import me.mangorage.nethermelt.common.blockentitys.FoamBlockEntity;
 import me.mangorage.nethermelt.api.ITickable;
 import net.minecraft.core.BlockPos;
@@ -30,7 +29,7 @@ import java.util.function.Consumer;
 import static me.mangorage.nethermelt.common.core.Constants.BlockStateProperties.STAGE;
 import static me.mangorage.nethermelt.common.core.Constants.BlockStateProperties.VISIBLE;
 
-public class FoamBlock extends Block implements EntityBlock, IResistant {
+public class FoamBlock extends Block implements EntityBlock {
     private static int[] LIGHT_LEVELS = {2, 6, 8, 15};
 
     private String variantType;

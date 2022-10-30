@@ -17,11 +17,11 @@ public class GenItemModelProvider extends ItemModelProvider {
         super(generator, MODID, existingFileHelper);
     }
 
-    public void BlockItem(Block block, String modelName) {
+    public void BlockItem(String variant, Block block, String modelName) {
         ResourceLocation id = Objects.requireNonNull(block.getRegistryName());
         String namespace = id.getNamespace();
 
-        ResourceLocation textureLocation = new ResourceLocation(namespace, ModelProvider.BLOCK_FOLDER + "/" + modelName);
+        ResourceLocation textureLocation = new ResourceLocation(namespace, ModelProvider.BLOCK_FOLDER + "/variants/" + variant + "/" + modelName);
 
         cubeAll(block.asItem().getRegistryName().getPath(), textureLocation);
     }
@@ -31,11 +31,11 @@ public class GenItemModelProvider extends ItemModelProvider {
             RegistryCollection collection = RegistryCollection.getVariant(variant);
             String name = collection.PROPERTIES.getName();
 
-            BlockItem(collection.BLOCK_FOAM.get(), name + "foam");
+            BlockItem(variant, collection.BLOCK_FOAM.get(), "foam");
             if (variant.equals("nether")) {
-                BlockItem(collection.BLOCK_ROOT.get(), name + "root");
-                BlockItem(collection.BLOCK_DEAD_ROOT.get(), name + "deadroot");
-                BlockItem(collection.BLOCK_DEAD_FOAM.get(), name + "deadfoam");
+                BlockItem(variant, collection.BLOCK_ROOT.get(), "root");
+                BlockItem(variant, collection.BLOCK_DEAD_ROOT.get(), "deadroot");
+                BlockItem(variant, collection.BLOCK_DEAD_FOAM.get(), "deadfoam");
             }
         });
 

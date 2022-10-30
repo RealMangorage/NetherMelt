@@ -1,8 +1,10 @@
 package me.mangorage.nethermelt;
 
 import me.mangorage.nethermelt.api.IResistantBlocksProvider;
+import me.mangorage.nethermelt.common.compat.nethermelt.ResistantBlocksProvider;
 import me.mangorage.nethermelt.common.compat.theoneprobe.TOPPlugin;
 import me.mangorage.nethermelt.common.config.Config;
+import me.mangorage.nethermelt.common.core.Constants;
 import me.mangorage.nethermelt.common.core.Registration;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -35,6 +37,19 @@ public class NetherMelt {
     public static IEventBus ForgeEventBus = FMLJavaModLoadingContext.get().getModEventBus();
     public static IEventBus MinecraftEventBus = MinecraftForge.EVENT_BUS;
 
+    public static boolean isResistant(Block block) {
+        if (RESISTANT_BLOCKS.contains(block))
+            return true;
+
+        return isResistant(block.getClass());
+    }
+
+    public static boolean isResistant(Class classz) {
+        return RESISTANT_BLOCKS_CLASSZ.contains(classz);
+    }
+
+
+
     public static CreativeModeTab CreativeTab = new CreativeModeTab("nethermelt") {
         @Override
         public ItemStack makeIcon() {
@@ -56,6 +71,8 @@ public class NetherMelt {
             InterModComms.sendTo("theoneprobe", "getTheOneProbe", TOPPlugin::new);
         }
 
+        InterModComms.sendTo(MODID, "getResistantBlocksProvider", ResistantBlocksProvider::new);
+
     }
 
     @SubscribeEvent
@@ -66,7 +83,7 @@ public class NetherMelt {
             String sender = message.senderModId();
             Object object = message.messageSupplier().get();
 
-            if (modID.equals(MODID) && method.equals("getBlocksProvider")) {
+            if (modID.equals(MODID) && method.equals("getResistantBlocksProvider")) {
                 if (object instanceof IResistantBlocksProvider RBP) {
                     logger.info("Recieved IResistantBlocksProvider from {}", sender);
 

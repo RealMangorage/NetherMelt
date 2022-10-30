@@ -1,6 +1,5 @@
 package me.mangorage.nethermelt.common.blocks;
 
-import me.mangorage.nethermelt.api.IResistant;
 import me.mangorage.nethermelt.common.blockentitys.RootBlockEntity;
 import me.mangorage.nethermelt.api.ITickable;
 import me.mangorage.nethermelt.common.config.NetherMeltConfig;
@@ -39,7 +38,7 @@ import java.util.List;
 import static me.mangorage.nethermelt.common.core.Constants.BlockStateProperties.ACTIVATED;
 import static me.mangorage.nethermelt.common.core.Constants.Translatable.ROOT_TOOLTIP_WRONG_DIMENSION;
 
-public class RootBlock extends Block implements EntityBlock, IResistant {
+public class RootBlock extends Block implements EntityBlock {
     private final String type;
     private final Config config;
 

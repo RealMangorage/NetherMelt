@@ -41,7 +41,7 @@ public class GenBlockStateProvider extends BlockStateProvider {
     }
 
 
-    public void createBlockModel(String variant, Block block) {
+    public void createBlockModel(String variant, Block block, String type) {
         ResourceLocation id = Objects.requireNonNull(block.getRegistryName());
         String namespace = id.getNamespace();
         String name = id.getPath();
@@ -50,13 +50,13 @@ public class GenBlockStateProvider extends BlockStateProvider {
             getVariantBuilder(block).forAllStates(state -> {
                 if (state.hasProperty(Constants.BlockStateProperties.ACTIVATED) && state.getValue(Constants.BlockStateProperties.ACTIVATED)) {
                     String modelName = name;
-                    ResourceLocation textureLocation = new ResourceLocation(namespace, ModelProvider.BLOCK_FOLDER + "/variants/" + variant + "/activated_" + modelName.replace(variant, ""));
-                    BlockModelBuilder model = models().cubeAll(modelName, textureLocation);
+                    ResourceLocation textureLocation = new ResourceLocation(namespace, ModelProvider.BLOCK_FOLDER + "/variants/" + variant + "/activated_" + type);
+                    BlockModelBuilder model = models().cubeAll("activated_" + modelName, textureLocation);
                     return ConfiguredModel.builder().modelFile(model).build();
                 }
 
                 String modelName = name;
-                ResourceLocation textureLocation = new ResourceLocation(namespace, ModelProvider.BLOCK_FOLDER + "/variants/" + variant + "/" + modelName.replace(variant, ""));
+                ResourceLocation textureLocation = new ResourceLocation(namespace, ModelProvider.BLOCK_FOLDER + "/variants/" + variant + "/" + type);
                 BlockModelBuilder model = models().cubeAll(modelName, textureLocation);
                 return ConfiguredModel.builder().modelFile(model).build();
             });
@@ -73,9 +73,9 @@ public class GenBlockStateProvider extends BlockStateProvider {
             RegistryCollection collection = RegistryCollection.getVariant(variant);
             createFoamBlock(collection.BLOCK_FOAM.get());
             if (variant.equals("nether")) {
-                createBlockModel(variant, collection.BLOCK_ROOT.get());
-                createBlockModel(variant, collection.BLOCK_DEAD_FOAM.get());
-                createBlockModel(variant, collection.BLOCK_DEAD_ROOT.get());
+                createBlockModel(variant, collection.BLOCK_ROOT.get(), "root");
+                createBlockModel(variant, collection.BLOCK_DEAD_FOAM.get(), "deadfoam");
+                createBlockModel(variant, collection.BLOCK_DEAD_ROOT.get(), "deadroot");
             }
         });
     }

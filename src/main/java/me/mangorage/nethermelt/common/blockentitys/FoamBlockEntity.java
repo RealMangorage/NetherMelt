@@ -5,6 +5,7 @@ import me.mangorage.nethermelt.common.blocks.FoamBlock;
 import me.mangorage.nethermelt.common.core.Registration;
 import me.mangorage.nethermelt.common.core.RegistryCollection;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.Connection;
@@ -40,10 +41,7 @@ public class FoamBlockEntity extends BlockEntity implements ITickable.Server {
             if (collection != null && collection.PROPERTIES.getDefaultAbsorbing() != null) {
                 Absorbing = collection.PROPERTIES.getDefaultAbsorbing();
             }
-
         }
-
-
     }
 
 
@@ -125,18 +123,9 @@ public class FoamBlockEntity extends BlockEntity implements ITickable.Server {
             if (getBlockState().getValue(STAGE) != MAX_STAGES) {
                 getLevel().setBlock(getBlockPos(), getBlockState().cycle(STAGE), Block.UPDATE_ALL);
             } else {
-                ArrayList<BlockPos> growto = new ArrayList<>();
-
-                growto.add(getBlockPos().above(1));
-                growto.add(getBlockPos().below(1));
-                growto.add(getBlockPos().north(1));
-                growto.add(getBlockPos().south(1));
-                growto.add(getBlockPos().east(1));
-                growto.add(getBlockPos().west(1));
-
-                growto.forEach(blockPos -> {
-                    getRoot().getCore().Grow(blockPos);
-                });
+                RootBlockEntity.Core core = getRoot().getCore();
+                for (Direction direction : Direction.values())
+                    core.Grow(getBlockPos().relative(direction, 1));
 
                 getRoot().getCore().Die(this);
             }

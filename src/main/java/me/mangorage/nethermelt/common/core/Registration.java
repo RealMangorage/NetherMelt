@@ -52,7 +52,8 @@ public class Registration {
             .name("nether")
             .modID("minecraft")
             .addDimensions(Level.NETHER)
-            .setDefaultAbsorbing(Blocks.NETHERRACK.defaultBlockState()));
+            .setDefaultAbsorbing(Blocks.NETHERRACK.defaultBlockState())
+            .build());
 
     /**
     public static RegistryCollection OVERWORLD = RegistryCollection.create(new RegistryCollection.Properties("overworld")

@@ -8,6 +8,7 @@ import me.mangorage.nethermelt.common.blocks.RootBlock;
 import net.minecraft.commands.arguments.blocks.BlockInput;
 import net.minecraft.commands.arguments.blocks.BlockStateArgument;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
@@ -23,7 +24,7 @@ import java.util.*;
 
 //TODO: Rename this class to a better name!
 public class RegistryCollection {
-    public static HashMap<String, RegistryCollection> REGISTRED = new HashMap<>();
+    private final static HashMap<String, RegistryCollection> REGISTRED = new HashMap<>();
 
     public static RegistryCollection getVariant(String ID) {
         return REGISTRED.get(ID);
@@ -66,16 +67,15 @@ public class RegistryCollection {
     }
 
     public static RegistryCollection create(Properties data) {
-        RegistryCollection collection = new RegistryCollection(data);
+        RegistryCollection collection = new RegistryCollection(data.locked ? data : data.build());
         REGISTRED.put(data.getID(), collection);
         return collection;
     }
 
     public static class Properties {
-
         private final List<ResourceKey<Level>> dimensions = new ArrayList<>();
         private final String ID;
-
+        private boolean locked = false;
         private String MODID;
         private String Name;
         private String defaultAbsorbingString = "";
@@ -85,28 +85,39 @@ public class RegistryCollection {
             this.ID = ID;
         }
 
+        private void checkLock() {
+            if (locked) {
+                throw new IllegalStateException("Cannot change Registry Collection properties once locked!");
+            }
+        }
+
         public Properties modID(String modID) {
+            checkLock();
             this.MODID = modID;
             return this;
         }
 
         public Properties name(String name) {
+            checkLock();
             this.Name = name;
             return this;
         }
 
         public Properties addDimensions(ResourceKey<Level> dimension) {
+            checkLock();
             this.dimensions.add(dimension);
             return this;
         }
 
 
         public Properties setDefaultAbsorbing(BlockState blockState) {
+            checkLock();
             this.defaultAbsorbingState = blockState;
             return this;
         }
 
         public Properties setDefaultAbsorbing(String blockState) {
+            checkLock();
             this.defaultAbsorbingString = blockState;
             return this;
         }
@@ -143,6 +154,12 @@ public class RegistryCollection {
             }
 
             return defaultAbsorbingState;
+        }
+
+
+        public Properties build() {
+            this.locked = true;
+            return this;
         }
 
         public boolean isModLoaded() {

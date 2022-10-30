@@ -1,7 +1,6 @@
 package me.mangorage.nethermelt.common.blockentitys;
 
 import me.mangorage.nethermelt.NetherMelt;
-import me.mangorage.nethermelt.api.IResistant;
 import me.mangorage.nethermelt.api.ITickable;
 import me.mangorage.nethermelt.common.blocks.RootBlock;
 import me.mangorage.nethermelt.common.core.Registration;
@@ -68,6 +67,7 @@ public class RootBlockEntity extends BlockEntity implements ITickable.Server {
                 if (!grown) {
                     BlockPos pos = getBlockPos();
                     AtomicBoolean Spreaded = new AtomicBoolean(false);
+
                     for (Direction direction : Direction.values()) {
                         boolean result = getCore().Grow(pos.relative(direction, 1));
                         if (result)
@@ -157,10 +157,8 @@ public class RootBlockEntity extends BlockEntity implements ITickable.Server {
         }
 
         private boolean canCorrode(BlockPos pos) {
-            if (getLevel().getBlockState(pos).getBlock() instanceof IResistant IR)
-                return IR.isResistant() ? false : true;
-
-
+            if (NetherMelt.isResistant(getLevel().getBlockState(pos).getBlock()))
+                return false;
 
             List<Block> blocks = new ArrayList<>();
 
