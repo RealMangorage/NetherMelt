@@ -24,7 +24,6 @@ java {
 }
 
 sourceSets {
-
     api {
         resources.srcDirs = []
         compileClasspath += configurations.getByName("minecraft")
@@ -146,39 +145,44 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
 
-    compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api")
-    compileOnly "mcjty.theoneprobe:theoneprobe:${top_version}"
+    //compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api")
 
-    runtimeOnly fg.deobf("curse.maven:jei-238222:3788739")
-    runtimeOnly fg.deobf("curse.maven:the-one-probe-245211:3671753")
-    runtimeOnly fg.deobf("curse.maven:carry-on-274259:3674344")
-    runtimeOnly fg.deobf("curse.maven:iron-furnaces-237664:3821274")
-    runtimeOnly fg.deobf("curse.maven:pipez-443900:3760255")
+    implementation(fg.deobf("curse.maven:theoneprobe-245211:3927520"))
+
+    //runtimeOnly fg.deobf("curse.maven:jei-238222:3788739")
+    //runtimeOnly fg.deobf("curse.maven:the-one-probe-245211:3671753")
+    //runtimeOnly fg.deobf("curse.maven:carry-on-274259:3674344")
+    //runtimeOnly fg.deobf("curse.maven:iron-furnaces-237664:3821274")
+    //runtimeOnly fg.deobf("curse.maven:pipez-443900:3760255")
 
 
     // runtimeOnly(fg.deobf("curse.maven:refinedstorage-243076:3712882"))
-    compileOnly(fg.deobf("curse.maven:refinedstorage-243076:3712882"))
+    //compileOnly(fg.deobf("curse.maven:refinedstorage-243076:3712882"))
 
     // FTB Chunks
-    runtimeOnly(fg.deobf("curse.maven:architectury-forge-419699:3781711"))
-    runtimeOnly(fg.deobf("curse.maven:ftb-teams-404468:3725501"))
-    runtimeOnly(fg.deobf("curse.maven:ftblib-404465:3725485"))
-    runtimeOnly(fg.deobf("curse.maven:ftbchunks-314906:3780113"))
+    ///runtimeOnly(fg.deobf("curse.maven:architectury-forge-419699:3781711"))
+    //runtimeOnly(fg.deobf("curse.maven:ftb-teams-404468:3725501"))
+    //runtimeOnly(fg.deobf("curse.maven:ftblib-404465:3725485"))
+    //runtimeOnly(fg.deobf("curse.maven:ftbchunks-314906:3780113"))
 
     // Mekanism + Mek Generators - Tunnel testing
-    runtimeOnly(fg.deobf("curse.maven:mekanism-268560:3743835"))
-    runtimeOnly(fg.deobf("curse.maven:mekanismgenerators-268566:3743837"))
+    //runtimeOnly(fg.deobf("curse.maven:mekanism-268560:3743835"))
+    //runtimeOnly(fg.deobf("curse.maven:mekanismgenerators-268566:3743837"))
 
     // Soul Shards (FTB)
-    runtimeOnly(fg.deobf("curse.maven:polylib-576589:3751528"))
-    runtimeOnly(fg.deobf("curse.maven:soulshards-551523:3757202"))
+    //runtimeOnly(fg.deobf("curse.maven:polylib-576589:3751528"))
+    //runtimeOnly(fg.deobf("curse.maven:soulshards-551523:3757202"))
 
     // Everlasting Abilities
-    runtimeOnly(fg.deobf("curse.maven:cyclopscore-232758:3809427"))
-    runtimeOnly(fg.deobf("curse.maven:everlastabilities-248353:3768481"))
+    //runtimeOnly(fg.deobf("curse.maven:cyclopscore-232758:3809427"))
+    //runtimeOnly(fg.deobf("curse.maven:everlastabilities-248353:3768481"))
 }
 
 jar {
+    from sourceSets.api.output
+
+    finalizedBy("reobfJar")
+
     manifest {
         attributes([
                 "Specification-Title"     : "nethermelt",

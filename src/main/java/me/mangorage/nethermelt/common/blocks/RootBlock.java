@@ -7,7 +7,7 @@ import me.mangorage.nethermelt.common.core.RegistryCollection;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -89,7 +89,7 @@ public class RootBlock extends Block implements EntityBlock {
 
         if (!state.getValue(ACTIVATED).booleanValue() && player.getItemInHand(hand).getItem().equals(Items.FLINT_AND_STEEL)) {
             if (!RegistryCollection.getVariant(getType()).PROPERTIES.getDimensions().contains(level.dimension())) {
-                player.displayClientMessage(new TranslatableComponent(ROOT_TOOLTIP_WRONG_DIMENSION.getKey(), "Nether Placeholder", "DIM Placeholder").withStyle(Style -> {
+                player.displayClientMessage(Component.translatable(ROOT_TOOLTIP_WRONG_DIMENSION.getKey(), "Nether Placeholder", "DIM Placeholder").withStyle(Style -> {
                     Style = Style.withColor(ChatFormatting.DARK_RED);
                     Style = Style.withBold(true);
                     return Style;

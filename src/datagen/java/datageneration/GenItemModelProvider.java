@@ -2,6 +2,7 @@ package datageneration;
 
 import me.mangorage.nethermelt.common.core.Registration;
 import me.mangorage.nethermelt.common.core.RegistryCollection;
+import me.mangorage.nethermelt.common.core.UpdateUtils;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -18,12 +19,12 @@ public class GenItemModelProvider extends ItemModelProvider {
     }
 
     public void BlockItem(String variant, Block block, String modelName) {
-        ResourceLocation id = Objects.requireNonNull(block.getRegistryName());
+        ResourceLocation id = Objects.requireNonNull(UpdateUtils.getRegistryName((block)));
         String namespace = id.getNamespace();
 
         ResourceLocation textureLocation = new ResourceLocation(namespace, ModelProvider.BLOCK_FOLDER + "/variants/" + variant + "/" + modelName);
 
-        cubeAll(block.asItem().getRegistryName().getPath(), textureLocation);
+        cubeAll(UpdateUtils.getRegistryName((block.asItem())).getPath(), textureLocation);
     }
     @Override
     protected void registerModels() {

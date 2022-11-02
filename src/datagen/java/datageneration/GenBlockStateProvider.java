@@ -2,6 +2,7 @@ package datageneration;
 
 import me.mangorage.nethermelt.common.core.Constants;
 import me.mangorage.nethermelt.common.core.RegistryCollection;
+import me.mangorage.nethermelt.common.core.UpdateUtils;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -20,16 +21,16 @@ public class GenBlockStateProvider extends BlockStateProvider {
 
 
     public void createFoamBlock(Block block) {
-        ResourceLocation id = Objects.requireNonNull(block.getRegistryName());
+        ResourceLocation id = Objects.requireNonNull(UpdateUtils.getRegistryName(block));
         String namespace = id.getNamespace();
 
         getVariantBuilder(block).forAllStates(state -> {
             int Stage = state.getValue(STAGE);
 
             ResourceLocation North = new ResourceLocation(namespace, ModelProvider.BLOCK_FOLDER + "/foam/stages/" + Stage + "/face1");
-            ResourceLocation South = new ResourceLocation(namespace, ModelProvider.BLOCK_FOLDER + "/foam/stages/" + Stage + "/face4");;
-            ResourceLocation East = new ResourceLocation(namespace, ModelProvider.BLOCK_FOLDER + "/foam/stages/" + Stage + "/face3");;
-            ResourceLocation West = new ResourceLocation(namespace, ModelProvider.BLOCK_FOLDER + "/foam/stages/" + Stage + "/face2");;
+            ResourceLocation South = new ResourceLocation(namespace, ModelProvider.BLOCK_FOLDER + "/foam/stages/" + Stage + "/face4");
+            ResourceLocation East = new ResourceLocation(namespace, ModelProvider.BLOCK_FOLDER + "/foam/stages/" + Stage + "/face3");
+            ResourceLocation West = new ResourceLocation(namespace, ModelProvider.BLOCK_FOLDER + "/foam/stages/" + Stage + "/face2");
             ResourceLocation Up = new ResourceLocation(namespace, ModelProvider.BLOCK_FOLDER + "/foam/stages/" + Stage + "/face5");
             ResourceLocation Down = new ResourceLocation(namespace, ModelProvider.BLOCK_FOLDER + "/foam/stages/" + Stage + "/face6");
 
@@ -42,20 +43,18 @@ public class GenBlockStateProvider extends BlockStateProvider {
 
 
     public void createBlockModel(String variant, Block block, String type) {
-        ResourceLocation id = Objects.requireNonNull(block.getRegistryName());
+        ResourceLocation id = Objects.requireNonNull(UpdateUtils.getRegistryName(block));
         String namespace = id.getNamespace();
-        String name = id.getPath();
+        String modelName = id.getPath();
 
         try {
             getVariantBuilder(block).forAllStates(state -> {
                 if (state.hasProperty(Constants.BlockStateProperties.ACTIVATED) && state.getValue(Constants.BlockStateProperties.ACTIVATED)) {
-                    String modelName = name;
                     ResourceLocation textureLocation = new ResourceLocation(namespace, ModelProvider.BLOCK_FOLDER + "/variants/" + variant + "/activated_" + type);
                     BlockModelBuilder model = models().cubeAll("activated_" + modelName, textureLocation);
                     return ConfiguredModel.builder().modelFile(model).build();
                 }
 
-                String modelName = name;
                 ResourceLocation textureLocation = new ResourceLocation(namespace, ModelProvider.BLOCK_FOLDER + "/variants/" + variant + "/" + type);
                 BlockModelBuilder model = models().cubeAll(modelName, textureLocation);
                 return ConfiguredModel.builder().modelFile(model).build();

@@ -5,6 +5,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.mangorage.nethermelt.NetherMelt;
 import me.mangorage.nethermelt.common.blocks.FoamBlock;
 import me.mangorage.nethermelt.common.blocks.RootBlock;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.arguments.blocks.BlockInput;
 import net.minecraft.commands.arguments.blocks.BlockStateArgument;
 import net.minecraft.resources.ResourceKey;
@@ -143,12 +144,14 @@ public class RegistryCollection {
             if (this.defaultAbsorbingString.length() > 0) {
                 BlockInput state = null;
 
+                /**
                 try {
-                    state = BlockStateArgument.block().parse(new StringReader(this.defaultAbsorbingString));
+                    state = BlockStateArgument.block(new CommandBuildContext()) .parse(new StringReader(this.defaultAbsorbingString));
                 } catch (CommandSyntaxException e) {
                     // Nonthing! Maybe
                     NetherMelt.logger.info("ISSUE + " + this.defaultAbsorbingString);
                 }
+                 **/
 
                 return state != null ? state.getState() : Blocks.SAND.defaultBlockState();
             }

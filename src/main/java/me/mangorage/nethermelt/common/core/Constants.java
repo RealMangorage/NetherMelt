@@ -1,7 +1,7 @@
 package me.mangorage.nethermelt.common.core;
 
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.item.BundleItem;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 
@@ -18,16 +18,16 @@ public class Constants {
 
     public static class Translatable {
         private String key;
-        private TranslatableComponent component;
+        private MutableComponent component;
         public static final Translatable
                 ROOT_TOOLTIP_WRONG_DIMENSION = new Translatable("tooltip.nethermelt.root.error.incorrectdimension");
 
         Translatable(String key) {
             this.key = key;
-            this.component = new TranslatableComponent(key);
+            this.component = Component.translatable(key);
         }
 
-        public TranslatableComponent getComponent() {
+        public MutableComponent getComponent() {
             return component;
         }
 

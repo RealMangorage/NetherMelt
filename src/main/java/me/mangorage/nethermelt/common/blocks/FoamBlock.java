@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -18,7 +19,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraftforge.client.IBlockRenderProperties;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -35,7 +35,7 @@ public class FoamBlock extends Block implements EntityBlock {
     private String variantType;
 
     public FoamBlock(String variantType) {
-        super(BlockBehaviour.Properties.copy(Blocks.GLASS).lightLevel(state -> {return LIGHT_LEVELS[state.getValue(STAGE)-1];}));
+        super(BlockBehaviour.Properties.copy(Blocks.SPONGE).lightLevel(state -> {return LIGHT_LEVELS[state.getValue(STAGE)-1];}));
         this.variantType = variantType;
         registerDefaultState(defaultBlockState().setValue(VISIBLE, false));
     }
@@ -52,7 +52,7 @@ public class FoamBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public void tick(BlockState state, @NotNull ServerLevel level, BlockPos pos, Random random) {
+    public void tick(BlockState state, @NotNull ServerLevel level, BlockPos pos, RandomSource random) {
         for (Direction direction : Direction.values()) {
             BlockPos nPos = pos.relative(direction, 1);
             BlockState cState = level.getBlockState(nPos);

@@ -24,9 +24,10 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec2;
-import net.minecraftforge.client.model.data.EmptyModelData;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 
 import java.awt.*;
 
@@ -62,7 +63,7 @@ public class FoamBlockRenderer implements BlockEntityRenderer<FoamBlockEntity> {
         } else {
             stack.pushPose();
             //stack.translate(0.01f, 0.01f, 0.01f);
-            dispatcher.renderSingleBlock(state, stack, buffer, packedLight, packedOverlay, EmptyModelData.INSTANCE);
+            dispatcher.renderSingleBlock(state, stack, buffer, packedLight, packedOverlay, ModelData.EMPTY, RenderType.cutoutMipped());
             stack.popPose();
         }
 
@@ -74,7 +75,7 @@ public class FoamBlockRenderer implements BlockEntityRenderer<FoamBlockEntity> {
         stack.translate(-.5, -.5, -.5);
 
 
-        dispatcher.renderSingleBlock(FBE.getBlockState().setValue(VISIBLE, true), stack, buffer, packedLight, packedOverlay, EmptyModelData.INSTANCE);
+        dispatcher.renderSingleBlock(FBE.getBlockState().setValue(VISIBLE, true), stack, buffer, packedLight, packedOverlay, ModelData.EMPTY, RenderType.cutoutMipped());
         stack.popPose();
     }
 
@@ -104,13 +105,16 @@ public class FoamBlockRenderer implements BlockEntityRenderer<FoamBlockEntity> {
 
         Fluid renderFluid = fluid.getFluid();
 
-        FluidAttributes attributes = renderFluid.getAttributes();
-        ResourceLocation fluidStill = attributes.getStillTexture(fluid);
+
+        FluidType attributes = renderFluid.getFluidType();
+        ResourceLocation fluidStill = IClientFluidTypeExtensions.of(renderFluid).getStillTexture();
+
+
         if(fluidStill != null) {
             TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(fluidStill);
             ResourceLocation spriteLocation = sprite.getName();
 
-            int color1 = renderFluid.getAttributes().getColor();
+            int color1 = IClientFluidTypeExtensions.of(renderFluid).getTintColor();
 
             float a = 1.0F;
             float r = (color1>> 16 & 0xFF) / 255.0F;

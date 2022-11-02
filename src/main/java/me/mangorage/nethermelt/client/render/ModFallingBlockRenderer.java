@@ -7,19 +7,27 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.culling.Frustum;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Random;
 
+@OnlyIn(Dist.CLIENT)
 public class ModFallingBlockRenderer extends EntityRenderer<ModFallingBlockEntity> {
+    private final BlockRenderDispatcher dispatcher;
+
     public static class Provider implements EntityRendererProvider {
         @Override
         public EntityRenderer create(Context pContext) {
@@ -29,6 +37,7 @@ public class ModFallingBlockRenderer extends EntityRenderer<ModFallingBlockEntit
 
     public ModFallingBlockRenderer(EntityRendererProvider.Context pContext) {
         super(pContext);
+        this.dispatcher = pContext.getBlockRenderDispatcher();
     }
 
     @Override
@@ -45,14 +54,9 @@ public class ModFallingBlockRenderer extends EntityRenderer<ModFallingBlockEntit
                 pMatrixStack.pushPose();
                 BlockPos blockpos = new BlockPos(pEntity.getX(), pEntity.getBoundingBox().maxY, pEntity.getZ());
                 pMatrixStack.translate(-0.5D, 0.0D, -0.5D);
-                BlockRenderDispatcher blockrenderdispatcher = Minecraft.getInstance().getBlockRenderer();
-                for (net.minecraft.client.renderer.RenderType type : net.minecraft.client.renderer.RenderType.chunkBufferLayers()) {
-                    if (ItemBlockRenderTypes.canRenderInLayer(blockstate, type)) {
-                        net.minecraftforge.client.ForgeHooksClient.setRenderType(type);
-                        blockrenderdispatcher.getModelRenderer().tesselateBlock(level, blockrenderdispatcher.getBlockModel(blockstate), blockstate, blockpos, pMatrixStack, pBuffer.getBuffer(type), false, new Random(), blockstate.getSeed(pEntity.getStartPos()), OverlayTexture.NO_OVERLAY);
-                    }
-                }
-                net.minecraftforge.client.ForgeHooksClient.setRenderType(null);
+                var model = this.dispatcher.getBlockModel(blockstate);
+                for (var renderType : model.getRenderTypes(blockstate, RandomSource.create(blockstate.getSeed(pEntity.getStartPos())), net.minecraftforge.client.model.data.ModelData.EMPTY))
+                    this.dispatcher.getModelRenderer().tesselateBlock(level, model, blockstate, blockpos, pMatrixStack, pBuffer.getBuffer(renderType), false, RandomSource.create(), blockstate.getSeed(pEntity.getStartPos()), OverlayTexture.NO_OVERLAY, net.minecraftforge.client.model.data.ModelData.EMPTY, renderType);
                 pMatrixStack.popPose();
                 super.render(pEntity, pEntityYaw, pPartialTicks, pMatrixStack, pBuffer, pPackedLight);
             }

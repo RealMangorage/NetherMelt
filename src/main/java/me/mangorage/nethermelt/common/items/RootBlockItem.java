@@ -8,7 +8,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -33,7 +32,7 @@ public class RootBlockItem extends BlockItem {
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> Tooltip, TooltipFlag flag) {
         if (stack.hasTag() && stack.getTag().contains("charges")) {
             int charges = stack.getTag().getInt("charges");
-            Tooltip.add(new TextComponent("Charges Remaining: ").withStyle(ChatFormatting.WHITE).append(new TextComponent("" + charges).withStyle(ChatFormatting.GOLD)));
+            Tooltip.add(Component.literal("Charges Remaining: ").withStyle(ChatFormatting.WHITE).append(Component.literal("" + charges).withStyle(ChatFormatting.GOLD)));
         }
 
         super.appendHoverText(stack, level, Tooltip, flag);

@@ -5,6 +5,7 @@ import me.mangorage.nethermelt.api.ITickable;
 import me.mangorage.nethermelt.common.blocks.RootBlock;
 import me.mangorage.nethermelt.common.core.Registration;
 import me.mangorage.nethermelt.common.core.RegistryCollection;
+import me.mangorage.nethermelt.common.core.ResistantHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -157,7 +158,7 @@ public class RootBlockEntity extends BlockEntity implements ITickable.Server {
         }
 
         private boolean canCorrode(BlockPos pos) {
-            if (NetherMelt.isResistant(getLevel().getBlockState(pos).getBlock()))
+            if (ResistantHandler.isResistant(getLevel().getBlockState(pos).getBlock()))
                 return false;
 
             List<Block> blocks = new ArrayList<>();

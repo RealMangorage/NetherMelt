@@ -4,7 +4,7 @@ import mcjty.theoneprobe.api.*;
 import me.mangorage.nethermelt.common.blockentitys.RootBlockEntity;
 import me.mangorage.nethermelt.common.blocks.RootBlock;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -31,11 +31,11 @@ public class TOPPlugin implements Function<ITheOneProbe, Void>, IProbeInfoProvid
     @Override
     public void addProbeInfo(ProbeMode Mode, IProbeInfo info, Player player, Level level, BlockState state, IProbeHitData data) {
         if (state.getBlock() instanceof RootBlock && level.getBlockEntity(data.getPos()) instanceof RootBlockEntity RBE) {
-            info.mcText(new TextComponent("Activated: ").withStyle(ChatFormatting.WHITE).append(new TextComponent(state.getValue(ACTIVATED) + "").withStyle(ChatFormatting.GOLD)));
-            info.mcText(new TextComponent("Charges Remaining: ").withStyle(ChatFormatting.WHITE).append(new TextComponent("" + RBE.getCharges()).withStyle(ChatFormatting.GOLD)));
+            info.mcText(Component.literal("Activated: ").withStyle(ChatFormatting.WHITE).append(Component.literal(state.getValue(ACTIVATED) + "").withStyle(ChatFormatting.GOLD)));
+            info.mcText(Component.literal("Charges Remaining: ").withStyle(ChatFormatting.WHITE).append(Component.literal("" + RBE.getCharges()).withStyle(ChatFormatting.GOLD)));
             if (Mode == ProbeMode.DEBUG) {
-                info.mcText(new TextComponent("Foam: " + RBE.getCore().getFoamCount()));
-                info.mcText(new TextComponent("Range: " + RBE.getCore().getRange()));
+                info.mcText(Component.literal("Foam: " + RBE.getCore().getFoamCount()));
+                info.mcText(Component.literal("Range: " + RBE.getCore().getRange()));
                 info.progress(100, 100, info.defaultProgressStyle());
             }
         }
