@@ -87,7 +87,7 @@ public class Registration {
     //================================================
     // INIT!
     //================================================
-    public static void init(Block... test) {
+    public static void init() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 
         BLOCKS.register(bus);
