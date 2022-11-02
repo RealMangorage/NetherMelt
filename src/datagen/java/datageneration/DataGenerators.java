@@ -3,10 +3,9 @@ package datageneration;
 import datageneration.localization.en_us;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
-
 import static me.mangorage.nethermelt.common.core.Constants.MODID;
 
 
@@ -16,17 +15,18 @@ public class DataGenerators {
     public static void gatherData(GatherDataEvent event)  {
         DataGenerator generator = event.getGenerator();
         ExistingFileHelper FileHelper = event.getExistingFileHelper();
+        boolean client = event.includeClient();
+        boolean server = event.includeServer();
+        boolean dev = event.includeDev();
 
-        if (event.includeServer()) {
-            generator.addProvider(new GenBlockTags(generator, FileHelper));
-            generator.addProvider(new GenRecipes(generator));
-            generator.addProvider(new GenLootTables(generator));
-        }
+        generator.addProvider(server, new GenBlockTags(generator, FileHelper));
+        generator.addProvider(server, new GenRecipes(generator));
+        generator.addProvider(server, new GenLootTables(generator));
 
-        if (event.includeClient()) {
-            generator.addProvider(new GenBlockStateProvider(generator, FileHelper));
-            generator.addProvider(new GenItemModelProvider(generator, FileHelper));
-            generator.addProvider(new en_us(generator));
-        }
+
+        generator.addProvider(client, new GenBlockStateProvider(generator, FileHelper));
+        generator.addProvider(client, new GenItemModelProvider(generator, FileHelper));
+        generator.addProvider(client, new en_us(generator));
+
     }
 }

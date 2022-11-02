@@ -2,11 +2,11 @@
   "parent": "minecraft:block/cube",
   "textures": {
     "down": "nethermelt:block/foam/stages/2/face6",
-    "up": "nethermelt:block/foam/stages/2/face5",
-    "north": "nethermelt:block/foam/stages/2/face1",
-    "south": "nethermelt:block/foam/stages/2/face4",
     "east": "nethermelt:block/foam/stages/2/face3",
-    "west": "nethermelt:block/foam/stages/2/face2",
-    "particle": "minecraft:block/netherrack"
+    "north": "nethermelt:block/foam/stages/2/face1",
+    "particle": "minecraft:block/netherrack",
+    "south": "nethermelt:block/foam/stages/2/face4",
+    "up": "nethermelt:block/foam/stages/2/face5",
+    "west": "nethermelt:block/foam/stages/2/face2"
   }
 }
