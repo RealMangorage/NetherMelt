@@ -1,10 +1,9 @@
 package me.mangorage.nethermelt.common.blocks;
 
 import me.mangorage.nethermelt.common.blockentitys.FoamBlockEntity;
-import me.mangorage.nethermelt.api.ITickable;
+import me.mangorage.nethermelt.common.core.ITickable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
@@ -22,9 +21,6 @@ import net.minecraft.world.level.material.FluidState;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-
-import java.util.Random;
-import java.util.function.Consumer;
 
 import static me.mangorage.nethermelt.common.core.Constants.BlockStateProperties.STAGE;
 import static me.mangorage.nethermelt.common.core.Constants.BlockStateProperties.VISIBLE;

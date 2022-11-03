@@ -1,6 +1,5 @@
 package me.mangorage.test;
 
-import me.mangorage.test.compat.nethermelt.BlockProvider;
 import me.mangorage.test.core.Constants;
 import me.mangorage.test.core.Registration;
 import net.minecraft.world.item.CreativeModeTab;
@@ -35,10 +34,4 @@ public class Test {
 
         ForgeEventBus.register(this);
     }
-
-    @SubscribeEvent
-    public void onFMLCommon(FMLCommonSetupEvent event) {
-        InterModComms.sendTo("nethermelt", "getBlocksProvider", BlockProvider::new);
-    }
-
 }

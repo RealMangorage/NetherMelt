@@ -24,17 +24,10 @@ java {
 }
 
 sourceSets {
-    api {
-        resources.srcDirs = []
-        compileClasspath += configurations.getByName("minecraft")
-    }
-
     datagen {
         compileClasspath += configurations.getByName("minecraft")
         compileClasspath += sourceSets.main.output
         runtimeClasspath += sourceSets.main.output
-        compileClasspath += sourceSets.api.output
-        runtimeClasspath += sourceSets.api.output
     }
 
     main {
@@ -45,20 +38,6 @@ sourceSets {
         resources {
             srcDir "src/generated/resources"
         }
-
-        compileClasspath += sourceSets.api.output
-        runtimeClasspath += sourceSets.api.output
-    }
-
-    example {
-        java {
-            srcDir "src/example/java"
-        }
-
-        compileClasspath += configurations.getByName("minecraft")
-        compileClasspath += sourceSets.api.output
-        runtimeClasspath += sourceSets.api.output
-        compileClasspath += sourceSets.main.output
     }
 }
 
@@ -77,11 +56,6 @@ minecraft {
             mods {
                 foamblock {
                     source sourceSets.main
-                    source sourceSets.api
-                }
-
-                example {
-                    source sourceSets.example
                 }
             }
         }
@@ -95,11 +69,6 @@ minecraft {
             mods {
                 foamblock {
                     source sourceSets.main
-                    source sourceSets.api
-                }
-
-                example {
-                    source sourceSets.example
                 }
             }
         }
@@ -115,7 +84,6 @@ minecraft {
             mods {
                 foamblock {
                     source sourceSets.main
-                    source sourceSets.api
                     source sourceSets.datagen
                 }
             }
@@ -179,21 +147,17 @@ dependencies {
 }
 
 jar {
-    from sourceSets.api.output
-
     finalizedBy("reobfJar")
 
     manifest {
         attributes([
                 "Specification-Title"     : "nethermelt",
                 //"Specification-Vendor": "nethermelt authors",
-                "Specification-Version"   : "1", // We are version 1 of ourselves
+                "Specification-Version"   : "${nethermelt_version}",
                 "Implementation-Title"    : project.name,
-                "Implementation-Version"  : project.jar.archiveVersion,
+                "Implementation-Version"  : "${nethermelt_version}",
                 //"Implementation-Vendor": "nethermelt authors",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
 }
-
-jar.finalizedBy('reobfJar')

@@ -1,11 +1,10 @@
 package me.mangorage.nethermelt.common.blockentitys;
 
-import me.mangorage.nethermelt.NetherMelt;
-import me.mangorage.nethermelt.api.ITickable;
+import me.mangorage.nethermelt.common.core.ITickable;
 import me.mangorage.nethermelt.common.blocks.RootBlock;
+import me.mangorage.nethermelt.common.core.ModBlockTags;
 import me.mangorage.nethermelt.common.core.Registration;
 import me.mangorage.nethermelt.common.core.RegistryCollection;
-import me.mangorage.nethermelt.common.core.ResistantHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -13,11 +12,11 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static me.mangorage.nethermelt.common.core.Constants.BlockStateProperties.ACTIVATED;
 
@@ -157,20 +156,8 @@ public class RootBlockEntity extends BlockEntity implements ITickable.Server {
             return result.get();
         }
 
-        private boolean canCorrode(BlockPos pos) {
-            if (ResistantHandler.isResistant(getLevel().getBlockState(pos).getBlock()))
-                return false;
-
-            List<Block> blocks = new ArrayList<>();
-
-            blocks.add(Blocks.AIR);
-            blocks.add(Blocks.CAVE_AIR);
-            blocks.add(Blocks.VOID_AIR);
-
-            if (blocks.contains(level.getBlockState(pos).getBlock()))
-                return false;
-
-            return true;
+        private boolean canCorrode(Block block) {
+            return ForgeRegistries.BLOCKS.getHolder(block).get().containsTag(ModBlockTags.CAN_CORRODE);
         }
 
         public void killAllFoam() {
@@ -198,7 +185,7 @@ public class RootBlockEntity extends BlockEntity implements ITickable.Server {
         }
 
         public boolean Grow(BlockPos pos) {
-            if (isInRange(getBlockPos(), pos) && canCorrode(pos)) {
+            if (isInRange(getBlockPos(), pos) && canCorrode(getLevel().getBlockState(pos).getBlock())) {
                 BlockState oldState = getLevel().getBlockState(pos);
                 BlockState newState = RegistryCollection.getVariant(getBlock().getType()).BLOCK_FOAM.get().defaultBlockState();
 

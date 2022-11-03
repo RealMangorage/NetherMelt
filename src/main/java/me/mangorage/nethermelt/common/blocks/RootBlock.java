@@ -1,7 +1,7 @@
 package me.mangorage.nethermelt.common.blocks;
 
 import me.mangorage.nethermelt.common.blockentitys.RootBlockEntity;
-import me.mangorage.nethermelt.api.ITickable;
+import me.mangorage.nethermelt.common.core.ITickable;
 import me.mangorage.nethermelt.common.config.NetherMeltConfig;
 import me.mangorage.nethermelt.common.core.RegistryCollection;
 import net.minecraft.ChatFormatting;

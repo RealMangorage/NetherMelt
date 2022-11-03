@@ -1,6 +1,6 @@
 package me.mangorage.nethermelt.common.blockentitys;
 
-import me.mangorage.nethermelt.api.ITickable;
+import me.mangorage.nethermelt.common.core.ITickable;
 import me.mangorage.nethermelt.common.blocks.FoamBlock;
 import me.mangorage.nethermelt.common.core.Registration;
 import me.mangorage.nethermelt.common.core.RegistryCollection;
@@ -17,7 +17,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 import static me.mangorage.nethermelt.common.core.Constants.BlockStateProperties.STAGE;
