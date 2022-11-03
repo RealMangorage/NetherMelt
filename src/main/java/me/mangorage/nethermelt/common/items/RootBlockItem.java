@@ -5,6 +5,7 @@ import me.mangorage.nethermelt.common.blocks.RootBlock;
 import me.mangorage.nethermelt.common.core.Registration;
 import me.mangorage.nethermelt.common.core.RegistryCollection;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -21,11 +22,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class RootBlockItem extends BlockItem {
-    private final String type;
-
-    public RootBlockItem(RootBlock block) {
-        super(block, RegistryCollection.getVariant(block.getType()).PROPERTIES.isModLoaded() ? Registration.PROPERTIES_ITEM.get().stacksTo(64).tab(NetherMelt.CreativeTab) : Registration.PROPERTIES_ITEM.get().stacksTo(64));
-        type = block.getType();
+    public RootBlockItem(RootBlock block, Properties properties) {
+        super(block, properties);
     }
 
     @Override

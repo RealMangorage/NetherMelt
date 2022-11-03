@@ -9,6 +9,6 @@ import static me.mangorage.nethermelt.common.core.Constants.MODID;
 
 public class ModBlockTags {
     public static final TagKey<Block> CAN_CORRODE = BlockTags.create(new ResourceLocation(MODID, "can_corrode"));
-
+    public static final TagKey<Block> CAN_FALL = BlockTags.create(new ResourceLocation(MODID, "can_fall"));
 
 }

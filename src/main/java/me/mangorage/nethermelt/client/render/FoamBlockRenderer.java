@@ -47,7 +47,6 @@ public class FoamBlockRenderer implements BlockEntityRenderer<FoamBlockEntity> {
     }
 
 
-
     @Override
     public void render(FoamBlockEntity FBE, float partialtick, PoseStack stack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
         final BlockRenderDispatcher dispatcher = this.context.getBlockRenderDispatcher();
@@ -63,7 +62,7 @@ public class FoamBlockRenderer implements BlockEntityRenderer<FoamBlockEntity> {
         } else {
             stack.pushPose();
             //stack.translate(0.01f, 0.01f, 0.01f);
-            dispatcher.renderSingleBlock(state, stack, buffer, packedLight, packedOverlay, ModelData.EMPTY, RenderType.cutoutMipped());
+            dispatcher.renderSingleBlock(state, stack, buffer, packedLight, packedOverlay, ModelData.EMPTY, RenderType.cutout());
             stack.popPose();
         }
 
@@ -75,10 +74,9 @@ public class FoamBlockRenderer implements BlockEntityRenderer<FoamBlockEntity> {
         stack.translate(-.5, -.5, -.5);
 
 
-        dispatcher.renderSingleBlock(FBE.getBlockState().setValue(VISIBLE, true), stack, buffer, packedLight, packedOverlay, ModelData.EMPTY, RenderType.cutoutMipped());
+        dispatcher.renderSingleBlock(FBE.getBlockState().setValue(VISIBLE, true), stack, buffer, packedLight, packedOverlay, ModelData.EMPTY, RenderType.cutout());
         stack.popPose();
     }
-
 
     public static void renderCubeUsingQuads(FluidStack fluid, float partialTicks, PoseStack matrixStack, MultiBufferSource renderBuffers, int combinedLight, int combinedOverlay) {
         // draw the object as a cube, using quads

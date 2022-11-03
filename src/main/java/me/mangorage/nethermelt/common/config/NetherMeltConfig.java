@@ -2,8 +2,6 @@ package me.mangorage.nethermelt.common.config;
 
 import me.mangorage.nethermelt.common.core.RegistryCollection;
 import net.minecraftforge.common.ForgeConfigSpec;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class NetherMeltConfig {
@@ -19,52 +17,48 @@ public class NetherMeltConfig {
 
 
 
-        RegistryCollection.getVariantIDs().forEach(type -> {
-            RegistryCollection collection = RegistryCollection.getVariant(type);
+        RegistryCollection.getVariantIDs().forEach(variantID -> {
+            RegistryCollection collection = RegistryCollection.getVariant(variantID);
             RegistryCollection.Properties data = collection.PROPERTIES;
 
             SERVER_BUILDER.push(data.getName());
 
             HashMap<Type, ForgeConfigSpec.ConfigValue<?>> CONFIG = new HashMap<>();
 
+            CONFIG.put(
+                    Type.DEFAULT_CHARGES,
+                    SERVER_BUILDER.define("DEFAULT_CHARGES", 10)
+            );
 
             CONFIG.put(
-                    Type.RESISTANT,
-                    SERVER_BUILDER.define("RESISTANT", new ArrayList())
+                    Type.MAX_CHARGES,
+                    SERVER_BUILDER.define("MAX_CHARGES", 100)
             );
-            CONFIG.put(
-                    Type.FALLING_BLOCKS,
-                    SERVER_BUILDER.define("FALLING_BLOCKS", new ArrayList())
-            );
-            CONFIG.put(
-                    Type.CHARGES,
-                    SERVER_BUILDER.define("CHARGES", 10)
-            );
+
             CONFIG.put(
                     Type.RANGE,
                     SERVER_BUILDER.define("RANGE", 10)
             );
 
 
-            CONFIGS.put(type, CONFIG);
+            CONFIGS.put(variantID, CONFIG);
             SERVER_BUILDER.pop(); // Continue to next type
 
-
+            RegistryCollection.getVariant(variantID).BLOCK_ROOT.get().getConfig().load();
         });
 
 
     }
 
-    public static HashMap<Type, ForgeConfigSpec.ConfigValue<?>> getConfig(String type) {
-        return CONFIGS.get(type);
+    public static HashMap<Type, ForgeConfigSpec.ConfigValue<?>> getConfig(String variantID) {
+        return CONFIGS.get(variantID);
     }
 
 
     public enum Type {
-        RESISTANT,
-        FALLING_BLOCKS,
-        CHARGES,
-        RANGE;
+        DEFAULT_CHARGES,
+        MAX_CHARGES,
+        RANGE
     }
 
 }

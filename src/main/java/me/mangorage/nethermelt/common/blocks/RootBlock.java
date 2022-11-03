@@ -29,39 +29,42 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.ForgeConfigSpec;
-
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import static me.mangorage.nethermelt.common.core.Constants.BlockStateProperties.ACTIVATED;
 import static me.mangorage.nethermelt.common.core.Constants.Translatable.ROOT_TOOLTIP_WRONG_DIMENSION;
 
-public class RootBlock extends Block implements EntityBlock {
-    private final String type;
+public class RootBlock extends VariantBlock implements EntityBlock {
+
+    public static void setBlock(String variantID, Level level, BlockPos pos, int Charges) {
+        level.setBlock(pos, RegistryCollection.getVariant(variantID).BLOCK_ROOT.get().defaultBlockState(), Block.UPDATE_ALL);
+        if (level.getBlockEntity(pos) instanceof RootBlockEntity RBE)
+            RBE.setCharges(Charges);
+    }
+
     private final Config config;
 
     public RootBlock(String type) {
-        super(BlockBehaviour.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(100.0f).destroyTime(13.0f).sound(SoundType.NETHERRACK).lightLevel(state -> {
+        super(BlockBehaviour.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(25.0f).explosionResistance(100.0f).destroyTime(13.0f).sound(SoundType.NETHERRACK).lightLevel(state -> {
             return state.getValue(ACTIVATED) ? 15 : 0;
-        }));
+        }), type);
+
         registerDefaultState(this.defaultBlockState().setValue(ACTIVATED, false));
-        this.type = type;
-        this.config = new Config(type);
+        this.config = new Config();
     }
 
     public Config getConfig() {return config;}
-    public String getType() {return type;}
 
     private ItemStack getItem(int Charges) {
-        ItemStack stack = RegistryCollection.getVariant(getType()).ITEM_ROOT.get().getDefaultInstance();
+        ItemStack stack = RegistryCollection.getVariant(getVariantID()).ITEM_ROOT.get().getDefaultInstance();
         CompoundTag tag = new CompoundTag();
         tag.putInt("charges", Charges);
         stack.setTag(tag);
 
         if (Charges <= 0) {
-            return RegistryCollection.getVariant(getType()).ITEM_DEAD_ROOT.get().getDefaultInstance();
+            return RegistryCollection.getVariant(getVariantID()).ITEM_DEAD_ROOT.get().getDefaultInstance();
         }
 
         return stack;
@@ -88,7 +91,7 @@ public class RootBlock extends Block implements EntityBlock {
             return InteractionResult.FAIL;
 
         if (!state.getValue(ACTIVATED).booleanValue() && player.getItemInHand(hand).getItem().equals(Items.FLINT_AND_STEEL)) {
-            if (!RegistryCollection.getVariant(getType()).PROPERTIES.getDimensions().contains(level.dimension())) {
+            if (!RegistryCollection.getVariant(getVariantID()).PROPERTIES.getDimensions().contains(level.dimension())) {
                 player.displayClientMessage(Component.translatable(ROOT_TOOLTIP_WRONG_DIMENSION.getKey(), "Nether Placeholder", "DIM Placeholder").withStyle(Style -> {
                     Style = Style.withColor(ChatFormatting.DARK_RED);
                     Style = Style.withBold(true);
@@ -155,40 +158,20 @@ public class RootBlock extends Block implements EntityBlock {
     public class Config {
         private HashMap<NetherMeltConfig.Type, ForgeConfigSpec.ConfigValue<?>> config;
 
-        private String type;
-        private List<Block> RESISTANT_BLOCKS = new ArrayList<>(); // Blocks that cant be absorbed by foam blocks
-        private List<Block> FALLING_BLOCKS = new ArrayList<>(); // Blocks that can Fall!
-
-
-        private void load() {
-            config = NetherMeltConfig.getConfig(this.type);
+        public void load() {
+            config = NetherMeltConfig.getConfig(getVariantID());
         }
+
+        public Integer getMaxCharges() {
+            return (Integer) config.get(NetherMeltConfig.Type.MAX_CHARGES).get();
+        }
+
         public Integer getDefaultCharges() {
-            if (config == null) load();
-            ForgeConfigSpec.ConfigValue<Integer> CHARGES = ((ForgeConfigSpec.ConfigValue<Integer>) config.get(NetherMeltConfig.Type.CHARGES));
-            return CHARGES.get();
+            return (Integer) config.get(NetherMeltConfig.Type.DEFAULT_CHARGES).get();
         }
 
         public Integer getDefaultRange() {
-            if (config == null) load();
-            ForgeConfigSpec.ConfigValue<Integer> RANGE = ((ForgeConfigSpec.ConfigValue<Integer>) config.get(NetherMeltConfig.Type.RANGE));
-            return RANGE.get();
-        }
-
-        public List<Block> getDefaultResistantBlocks() {
-            if (config == null) load();
-            return RESISTANT_BLOCKS;
-        }
-
-        public List<Block> getDefaultFallingBlocks() {
-            if (config == null) load();
-            return FALLING_BLOCKS;
-        }
-
-
-        private Config(String type) {
-            this.type = type;
-            load();
+            return  (Integer) config.get(NetherMeltConfig.Type.RANGE).get();
         }
     }
 }

@@ -8,12 +8,13 @@ import me.mangorage.nethermelt.common.core.RegistryCollection;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistries;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -43,7 +44,7 @@ public class RootBlockEntity extends BlockEntity implements ITickable.Server {
                 core = new Core();
 
             if (CHARGES == -1)
-                CHARGES = ((RootBlock) getBlockState().getBlock()).getConfig().getDefaultCharges() + 10;
+                CHARGES = ((RootBlock) getBlockState().getBlock()).getConfig().getDefaultCharges();
 
         }
 
@@ -54,7 +55,7 @@ public class RootBlockEntity extends BlockEntity implements ITickable.Server {
             getLevel().setBlock(getBlockPos(), getBlockState().setValue(ACTIVATED, false), Block.UPDATE_ALL);
             grown = false;
         } else {
-            getLevel().setBlock(getBlockPos(), RegistryCollection.getVariant(getBlock().getType()).BLOCK_DEAD_ROOT.get().defaultBlockState(), Block.UPDATE_ALL);
+            getLevel().setBlock(getBlockPos(), RegistryCollection.getVariant(getBlock().getVariantID()).BLOCK_DEAD_ROOT.get().defaultBlockState(), Block.UPDATE_ALL);
         }
     }
 
@@ -108,6 +109,18 @@ public class RootBlockEntity extends BlockEntity implements ITickable.Server {
     public void loadFoam(FoamBlockEntity foam) {getCore().add(foam);}
     public int getCharges() {return CHARGES;}
     public void setCharges(int amount) {CHARGES = amount;}
+
+    public void addCharge(int amount, boolean preventExplosion) {
+        setCharges(CHARGES + amount);
+        if (CHARGES > getBlock().getConfig().getMaxCharges() && !preventExplosion && !level.isClientSide()) {
+            getLevel().explode(EntityType.TNT.create(level), getBlockPos().getX(), getBlockPos().relative(Direction.DOWN, 1).getY(), getBlockPos().getZ(), 4.0F, Explosion.BlockInteraction.BREAK);
+            getLevel().setBlock(getBlockPos(), RegistryCollection.getVariant(getBlock().getVariantID()).BLOCK_DEAD_ROOT.get().defaultBlockState(), Block.UPDATE_ALL);
+        }
+    }
+
+    public void addCharge(int amount) {
+        addCharge(amount, false);
+    }
 
     public RootBlock getBlock() {
         return (RootBlock) getBlockState().getBlock();
@@ -166,7 +179,7 @@ public class RootBlockEntity extends BlockEntity implements ITickable.Server {
             posList.forEach(pos -> {
                 if (getLevel().getBlockEntity(pos) instanceof FoamBlockEntity FBE)
                     FBE.interupted = true;
-                getLevel().setBlock(pos, RegistryCollection.getVariant(getBlock().getType()).BLOCK_DEAD_FOAM.get().defaultBlockState(), Block.UPDATE_ALL);
+                getLevel().setBlock(pos, RegistryCollection.getVariant(getBlock().getVariantID()).BLOCK_DEAD_FOAM.get().defaultBlockState(), Block.UPDATE_ALL);
             });
 
             FOAM.clear();
@@ -187,7 +200,7 @@ public class RootBlockEntity extends BlockEntity implements ITickable.Server {
         public boolean Grow(BlockPos pos) {
             if (isInRange(getBlockPos(), pos) && canCorrode(getLevel().getBlockState(pos).getBlock())) {
                 BlockState oldState = getLevel().getBlockState(pos);
-                BlockState newState = RegistryCollection.getVariant(getBlock().getType()).BLOCK_FOAM.get().defaultBlockState();
+                BlockState newState = RegistryCollection.getVariant(getBlock().getVariantID()).BLOCK_FOAM.get().defaultBlockState();
 
                 getLevel().setBlock(pos, newState, Block.UPDATE_ALL);
 

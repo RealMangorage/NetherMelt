@@ -24,7 +24,6 @@ public class GenBlockTags extends BlockTagsProvider {
 
             tag(BlockTags.NEEDS_DIAMOND_TOOL).add(collection.BLOCK_ROOT.get(), collection.BLOCK_DEAD_ROOT.get());
             tag(BlockTags.MINEABLE_WITH_PICKAXE).add(collection.BLOCK_ROOT.get(), collection.BLOCK_DEAD_ROOT.get());
-            tag(ModBlockTags.CAN_CORRODE).add(Blocks.STONE);
         });
     }
 

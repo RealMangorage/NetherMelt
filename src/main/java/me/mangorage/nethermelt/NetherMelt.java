@@ -6,6 +6,7 @@ import me.mangorage.nethermelt.common.core.Registration;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
@@ -35,7 +36,7 @@ public class NetherMelt {
         ForgeEventBus.register(this);
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void setup(final FMLCommonSetupEvent event) {
         Config.register();
 

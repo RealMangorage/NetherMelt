@@ -16,15 +16,11 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-
-import java.util.Random;
-
 import static me.mangorage.nethermelt.common.core.Constants.BlockStateProperties.STAGE;
 import static me.mangorage.nethermelt.common.core.Constants.MAX_STAGES;
 
 public class FoamBlockEntity extends BlockEntity implements ITickable.Server {
     private float[] chance = new float[]{0.1f, 0f, 0f, 0f, 0.2f, 0.0f, 0f, 0.3f, 0f, 0f, 0f, 0.4f, 0.5f};
-    private Random random = new Random();
     private BlockPos root; // NBT
     private BlockState Absorbing = Blocks.NETHERRACK.defaultBlockState();
     public boolean interupted = false;
