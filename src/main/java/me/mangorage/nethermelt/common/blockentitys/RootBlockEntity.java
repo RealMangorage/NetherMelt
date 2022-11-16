@@ -50,7 +50,7 @@ public class RootBlockEntity extends BlockEntity implements ITickable.Server {
 
     }
 
-    public void Deactivate() {
+    public void deactivate() {
         if (CHARGES > 0) {
             getLevel().setBlock(getBlockPos(), getBlockState().setValue(ACTIVATED, false), Block.UPDATE_ALL);
             grown = false;
@@ -76,13 +76,13 @@ public class RootBlockEntity extends BlockEntity implements ITickable.Server {
                     }
 
                     if (!Spreaded.get()) {
-                        Deactivate();
+                        deactivate();
                     } else {
                         grown = true;
                     }
                     
                 } else if (getCore().FOAM.isEmpty()) {
-                    Deactivate();
+                    deactivate();
                 }
             }
         }
@@ -173,6 +173,10 @@ public class RootBlockEntity extends BlockEntity implements ITickable.Server {
             return ForgeRegistries.BLOCKS.getHolder(block).get().containsTag(ModBlockTags.CAN_CORRODE);
         }
 
+        private boolean canFall(Block block) {
+            return ForgeRegistries.BLOCKS.getHolder(block).get().containsTag(ModBlockTags.CAN_FALL);
+        }
+
         public void killAllFoam() {
             List<BlockPos> posList = new ArrayList<>();
             FOAM.forEach(foam -> posList.add(foam.getBlockPos()));
@@ -194,7 +198,7 @@ public class RootBlockEntity extends BlockEntity implements ITickable.Server {
             FOAM.remove(foam);
             getLevel().setBlock(foam.getBlockPos(), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
             if (FOAM.size() == 0)
-                Deactivate();
+                deactivate();
         }
 
         public boolean Grow(BlockPos pos) {
@@ -221,7 +225,6 @@ public class RootBlockEntity extends BlockEntity implements ITickable.Server {
         public Integer getRange() {
             return Range;
         }
-
     }
 }
 

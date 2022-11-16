@@ -14,7 +14,7 @@ import net.minecraft.world.level.Level;
 
 public class RootChargeItem extends Item {
     public RootChargeItem(Properties pProperties) {
-        super(pProperties);
+        super(pProperties.stacksTo(200000));
     }
 
 

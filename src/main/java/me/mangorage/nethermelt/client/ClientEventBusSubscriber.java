@@ -4,6 +4,7 @@ import me.mangorage.nethermelt.client.render.FoamBlockRenderer;
 import me.mangorage.nethermelt.client.render.ModFallingBlockRenderer;
 import me.mangorage.nethermelt.common.core.Registration;
 import me.mangorage.nethermelt.common.core.RegistryCollection;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -21,8 +22,8 @@ public class ClientEventBusSubscriber {
 
     @SubscribeEvent
     public static void setup(FMLClientSetupEvent event) {
-        RegistryCollection.getVariantIDs().forEach(variant -> {
-            ItemBlockRenderTypes.setRenderLayer(RegistryCollection.getVariant(variant).BLOCK_FOAM.get(), RenderType.cutout());
+        event.enqueueWork(() -> {
+            MenuScreens.register(Registration.MACHINE_CONTAINER.get(), MachineScreen::new);
         });
     }
     @SubscribeEvent

@@ -2,23 +2,33 @@
 package me.mangorage.nethermelt.common.core;
 
 import me.mangorage.nethermelt.common.blockentitys.FoamBlockEntity;
+import me.mangorage.nethermelt.common.blockentitys.MachineBlockEntity;
 import me.mangorage.nethermelt.common.blockentitys.RootBlockEntity;
 import me.mangorage.nethermelt.NetherMelt;
+import me.mangorage.nethermelt.common.blocks.MachineBlock;
+import me.mangorage.nethermelt.common.container.MachineContainer;
 import me.mangorage.nethermelt.common.entities.ModFallingBlockEntity;
 import me.mangorage.nethermelt.common.items.RootChargeItem;
 import me.mangorage.nethermelt.common.items.TriggerRemoteItem;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+
+import java.util.HashMap;
 import java.util.function.Supplier;
 
 import static me.mangorage.nethermelt.common.core.Constants.MODID;
@@ -32,6 +42,8 @@ public class Registration {
     public final static DeferredRegister<BlockEntityType<?>> BLOCK_ENTITYS = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MODID);
     public final static DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
     public final static DeferredRegister<EntityType<?>> ENTITYS = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, MODID);
+    public final static DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MODID);
+
 
     //================================================
     // PROPERTIES
@@ -59,6 +71,8 @@ public class Registration {
 
      **/
 
+    public final static RegistryObject<Block> MACHINE_BLOCK = BLOCKS.register("machineblock", () -> new MachineBlock());
+
     public final static RegistryObject<Item> ITEM_TRIGGER_REMOTE = ITEMS.register("remote", () -> new TriggerRemoteItem());
 
     public final static RegistryObject<Item> ITEM_ROOT_CHARGE = ITEMS.register("rootcharge", () -> new RootChargeItem(PROPERTIES_ITEM.get()));
@@ -80,6 +94,16 @@ public class Registration {
             NETHER.BLOCK_ROOT.get()
     ).build(null));
 
+    public final static RegistryObject<BlockEntityType<MachineBlockEntity>> MACHINE_BLOCKENTITY = BLOCK_ENTITYS.register("machine", () -> BlockEntityType.Builder.of(MachineBlockEntity::new,
+            MACHINE_BLOCK.get()
+    ).build(null));
+
+    //================================================
+    // Menu's
+    //================================================
+
+    public final static RegistryObject<MenuType<MachineContainer>> MACHINE_CONTAINER = CONTAINERS.register("menu", () -> IForgeMenuType.create((windowId, inv, data) -> new MachineContainer(windowId, data.readBlockPos(), inv, inv.player)));
+
 
     //================================================
     // INIT!
@@ -91,6 +115,7 @@ public class Registration {
         ITEMS.register(bus);
         BLOCK_ENTITYS.register(bus);
         ENTITYS.register(bus);
+        CONTAINERS.register(bus);
     }
 
 }

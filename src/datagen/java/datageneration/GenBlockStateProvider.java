@@ -3,6 +3,7 @@ package datageneration;
 import me.mangorage.nethermelt.common.core.Constants;
 import me.mangorage.nethermelt.common.core.RegistryCollection;
 import me.mangorage.nethermelt.common.core.UpdateUtils;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -36,6 +37,7 @@ public class GenBlockStateProvider extends BlockStateProvider {
 
             BlockModelBuilder model = models().cube("foam_" + Stage, Down, Up, North, South, East, West);
             model.texture("particle", new ResourceLocation("minecraft", "block/netherrack"));
+            model.renderType(mcLoc("cutout"));
 
             return ConfiguredModel.builder().modelFile(model).build();
         });
