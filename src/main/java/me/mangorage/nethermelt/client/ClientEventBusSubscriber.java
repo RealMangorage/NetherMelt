@@ -2,11 +2,9 @@ package me.mangorage.nethermelt.client;
 
 import me.mangorage.nethermelt.client.render.FoamBlockRenderer;
 import me.mangorage.nethermelt.client.render.ModFallingBlockRenderer;
+import me.mangorage.nethermelt.client.gui.screen.MachineScreen;
 import me.mangorage.nethermelt.common.core.Registration;
-import me.mangorage.nethermelt.common.core.RegistryCollection;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;

@@ -26,7 +26,7 @@ import static me.mangorage.nethermelt.common.core.Constants.BlockStateProperties
 import static me.mangorage.nethermelt.common.core.Constants.BlockStateProperties.VISIBLE;
 
 public class FoamBlock extends Block implements EntityBlock {
-    private static int[] LIGHT_LEVELS = {2, 6, 8, 15};
+    private static int[] LIGHT_LEVELS = {15, 6, 8, 15};
 
     private String variantType;
 

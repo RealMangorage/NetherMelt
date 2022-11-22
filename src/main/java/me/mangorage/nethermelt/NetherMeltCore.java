@@ -16,11 +16,12 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import static me.mangorage.nethermelt.common.core.Constants.MODID;
 
 @Mod(MODID)
-public class NetherMelt {
-    public static final Logger logger = LogManager.getLogger(NetherMelt.class);
+public class NetherMeltCore {
+    public static final Logger logger = LogManager.getLogger(NetherMeltCore.class);
     public static IEventBus ForgeEventBus = FMLJavaModLoadingContext.get().getModEventBus();
     public static IEventBus MinecraftEventBus = MinecraftForge.EVENT_BUS;
     public static CreativeModeTab CreativeTab = new CreativeModeTab("nethermelt") {
@@ -30,7 +31,7 @@ public class NetherMelt {
         }
     };
 
-    public NetherMelt() {
+    public NetherMeltCore() {
         Registration.init();
 
         ForgeEventBus.register(this);

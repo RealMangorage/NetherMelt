@@ -1,6 +1,6 @@
 package datageneration.localization;
 
-import me.mangorage.nethermelt.NetherMelt;
+import me.mangorage.nethermelt.NetherMeltCore;
 import me.mangorage.nethermelt.common.core.Registration;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;

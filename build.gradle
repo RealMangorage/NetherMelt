@@ -134,8 +134,8 @@ dependencies {
     //runtimeOnly(fg.deobf("curse.maven:ftbchunks-314906:3780113"))
 
     // Mekanism + Mek Generators - Tunnel testing
-    //runtimeOnly(fg.deobf("curse.maven:mekanism-268560:3743835"))
-    //runtimeOnly(fg.deobf("curse.maven:mekanismgenerators-268566:3743837"))
+    runtimeOnly(fg.deobf("curse.maven:mekanism-268560:4041164"))
+    runtimeOnly(fg.deobf("curse.maven:mekanismgenerators-268566:4041168"))
 
     // Soul Shards (FTB)
     //runtimeOnly(fg.deobf("curse.maven:polylib-576589:3751528"))

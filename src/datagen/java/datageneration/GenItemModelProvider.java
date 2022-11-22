@@ -2,13 +2,13 @@ package datageneration;
 
 import me.mangorage.nethermelt.common.core.Registration;
 import me.mangorage.nethermelt.common.core.RegistryCollection;
-import me.mangorage.nethermelt.common.core.UpdateUtils;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.client.model.generators.ModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Objects;
 
@@ -19,12 +19,12 @@ public class GenItemModelProvider extends ItemModelProvider {
     }
 
     public void BlockItem(String variant, Block block, String modelName) {
-        ResourceLocation id = Objects.requireNonNull(UpdateUtils.getRegistryName((block)));
+        ResourceLocation id = Objects.requireNonNull(ForgeRegistries.BLOCKS.getKey(block));
         String namespace = id.getNamespace();
 
         ResourceLocation textureLocation = new ResourceLocation(namespace, ModelProvider.BLOCK_FOLDER + "/variants/" + variant + "/" + modelName);
 
-        cubeAll(UpdateUtils.getRegistryName((block.asItem())).getPath(), textureLocation);
+        cubeAll(ForgeRegistries.ITEMS.getKey(block.asItem()).getPath(), textureLocation);
     }
     @Override
     protected void registerModels() {

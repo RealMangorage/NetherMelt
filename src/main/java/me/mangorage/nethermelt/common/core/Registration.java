@@ -1,34 +1,38 @@
 
 package me.mangorage.nethermelt.common.core;
 
+import me.mangorage.nethermelt.NetherMeltCore;
 import me.mangorage.nethermelt.common.blockentitys.FoamBlockEntity;
 import me.mangorage.nethermelt.common.blockentitys.MachineBlockEntity;
 import me.mangorage.nethermelt.common.blockentitys.RootBlockEntity;
-import me.mangorage.nethermelt.NetherMelt;
 import me.mangorage.nethermelt.common.blocks.MachineBlock;
 import me.mangorage.nethermelt.common.container.MachineContainer;
 import me.mangorage.nethermelt.common.entities.ModFallingBlockEntity;
+import me.mangorage.nethermelt.common.fluids.SludgeFluid;
 import me.mangorage.nethermelt.common.items.RootChargeItem;
 import me.mangorage.nethermelt.common.items.TriggerRemoteItem;
-import net.minecraft.world.Container;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Material;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-import java.util.HashMap;
 import java.util.function.Supplier;
 
 import static me.mangorage.nethermelt.common.core.Constants.MODID;
@@ -43,18 +47,21 @@ public class Registration {
     public final static DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
     public final static DeferredRegister<EntityType<?>> ENTITYS = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, MODID);
     public final static DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MODID);
-
+    public final static DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, MODID);
 
     //================================================
     // PROPERTIES
     //================================================
     public final static Supplier<Item.Properties> PROPERTIES_ITEM = () -> new Item.Properties()
-            .tab(NetherMelt.CreativeTab);
+            .tab(NetherMeltCore.CreativeTab);
 
 
     //================================================
     // BLOCKS & ITEMS
     //================================================
+
+    public final static RegistryObject<Block> SLUDGE_BLOCK = BLOCKS.register("sludge", () -> new LiquidBlock(() -> Registration.SLUDGE.get(), BlockBehaviour.Properties.of(Material.WATER)));
+
     public final static RegistryCollection NETHER = RegistryCollection.create(new RegistryCollection.Properties("nether")
             .name("nether")
             .modID("minecraft")
@@ -76,6 +83,8 @@ public class Registration {
     public final static RegistryObject<Item> ITEM_TRIGGER_REMOTE = ITEMS.register("remote", () -> new TriggerRemoteItem());
 
     public final static RegistryObject<Item> ITEM_ROOT_CHARGE = ITEMS.register("rootcharge", () -> new RootChargeItem(PROPERTIES_ITEM.get()));
+
+    public final static RegistryObject<BucketItem> SLUDGE_BUCKET_ITEM = ITEMS.register("sludgebucket", () -> new BucketItem(() -> Registration.SLUDGE.get(), PROPERTIES_ITEM.get()));
 
 
     //================================================
@@ -105,6 +114,15 @@ public class Registration {
     public final static RegistryObject<MenuType<MachineContainer>> MACHINE_CONTAINER = CONTAINERS.register("menu", () -> IForgeMenuType.create((windowId, inv, data) -> new MachineContainer(windowId, data.readBlockPos(), inv, inv.player)));
 
 
+
+    //================================================
+    // Fluids's
+    //================================================
+    public final static RegistryObject<FlowingFluid> SLUDGE = FLUIDS.register("sludge", () -> new SludgeFluid.Source());
+    public final static RegistryObject<FlowingFluid> SLUDGE_FLOWING = FLUIDS.register("sludge_flowing", () -> new SludgeFluid.Flowing());
+
+
+
     //================================================
     // INIT!
     //================================================
@@ -116,6 +134,7 @@ public class Registration {
         BLOCK_ENTITYS.register(bus);
         ENTITYS.register(bus);
         CONTAINERS.register(bus);
+        FLUIDS.register(bus);
     }
 
 }

@@ -1,6 +1,6 @@
 package me.mangorage.nethermelt.common.items;
 
-import me.mangorage.nethermelt.NetherMelt;
+import me.mangorage.nethermelt.NetherMeltCore;
 import me.mangorage.nethermelt.common.blocks.RootBlock;
 import me.mangorage.nethermelt.common.core.Registration;
 import me.mangorage.nethermelt.common.core.RegistryCollection;

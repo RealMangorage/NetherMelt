@@ -2,13 +2,13 @@ package datageneration;
 
 import me.mangorage.nethermelt.common.core.Constants;
 import me.mangorage.nethermelt.common.core.RegistryCollection;
-import me.mangorage.nethermelt.common.core.UpdateUtils;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.registries.ForgeRegistries;
+
 import java.util.Objects;
 
 import static me.mangorage.nethermelt.common.core.Constants.BlockStateProperties.STAGE;
@@ -22,7 +22,7 @@ public class GenBlockStateProvider extends BlockStateProvider {
 
 
     public void createFoamBlock(Block block) {
-        ResourceLocation id = Objects.requireNonNull(UpdateUtils.getRegistryName(block));
+        ResourceLocation id = Objects.requireNonNull(ForgeRegistries.BLOCKS.getKey(block));
         String namespace = id.getNamespace();
 
         getVariantBuilder(block).forAllStates(state -> {
@@ -45,7 +45,7 @@ public class GenBlockStateProvider extends BlockStateProvider {
 
 
     public void createBlockModel(String variant, Block block, String type) {
-        ResourceLocation id = Objects.requireNonNull(UpdateUtils.getRegistryName(block));
+        ResourceLocation id = Objects.requireNonNull(ForgeRegistries.BLOCKS.getKey(block));
         String namespace = id.getNamespace();
         String modelName = id.getPath();
 
