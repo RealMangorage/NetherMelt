@@ -76,10 +76,10 @@ public class MachineBlockEntity extends BlockEntity implements ITickable.Server 
         }
 
         private boolean removeItem(int amount, boolean simulate) {
-            if (getStackInSlot(1).getCount() >= amount) {
+            if (getStackInSlot(0).getCount() >= amount) {
                 if (!simulate) {
-                    getStackInSlot(1).shrink(amount);
-                    onContentsChanged(1);
+                    getStackInSlot(0).shrink(amount);
+                    onContentsChanged(0);
                 }
                 return true;
             }
@@ -120,12 +120,14 @@ public class MachineBlockEntity extends BlockEntity implements ITickable.Server 
 
         public FluidHandler(int capacity) {
             super(capacity);
-            setFluid(new FluidStack(Registration.SLUDGE.get(), 0));
+            //setFluid(new FluidStack(Registration.SLUDGE.get().getSource(), 0));
         }
 
         @Override
         public boolean isFluidValid(FluidStack stack) {
             return stack.getFluid().isSame(Registration.SLUDGE.get());
         }
+
+
     }
 }

@@ -17,9 +17,9 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import static me.mangorage.nethermelt.common.core.Constants.MODID;
+import static me.mangorage.nethermelt.common.core.Constants.MOD_ID;
 
-@Mod(MODID)
+@Mod(MOD_ID)
 public class NetherMeltCore {
     public static final Logger logger = LogManager.getLogger(NetherMeltCore.class);
     public static IEventBus ForgeEventBus = FMLJavaModLoadingContext.get().getModEventBus();

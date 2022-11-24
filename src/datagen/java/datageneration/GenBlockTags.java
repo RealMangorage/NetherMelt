@@ -1,19 +1,17 @@
 package datageneration;
 
-import me.mangorage.nethermelt.common.core.ModBlockTags;
 import me.mangorage.nethermelt.common.core.RegistryCollection;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 
-import static me.mangorage.nethermelt.common.core.Constants.MODID;
+import static me.mangorage.nethermelt.common.core.Constants.MOD_ID;
 
 public class GenBlockTags extends BlockTagsProvider {
     public GenBlockTags(DataGenerator dataGenerator, @Nullable ExistingFileHelper existingFileHelper) {
-        super(dataGenerator, MODID, existingFileHelper);
+        super(dataGenerator, MOD_ID, existingFileHelper);
     }
 
 

@@ -1,5 +1,6 @@
 {
   "parent": "minecraft:block/cube",
+  "render_type": "minecraft:cutout",
   "textures": {
     "down": "nethermelt:block/foam/stages/3/face6",
     "east": "nethermelt:block/foam/stages/3/face3",

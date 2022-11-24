@@ -12,10 +12,10 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Objects;
 
-import static me.mangorage.nethermelt.common.core.Constants.MODID;
+import static me.mangorage.nethermelt.common.core.Constants.MOD_ID;
 public class GenItemModelProvider extends ItemModelProvider {
     public GenItemModelProvider(DataGenerator generator, ExistingFileHelper existingFileHelper) {
-        super(generator, MODID, existingFileHelper);
+        super(generator, MOD_ID, existingFileHelper);
     }
 
     public void BlockItem(String variant, Block block, String modelName) {

@@ -13,6 +13,12 @@ public class MachineScreen extends AbstractContainerScreen<MachineContainer> {
         super(pMenu, pPlayerInventory, pTitle);
     }
 
+
+    @Override
+    protected void renderLabels(PoseStack pPoseStack, int pMouseX, int pMouseY) {
+        this.font.draw(pPoseStack, this.playerInventoryTitle, (float)this.inventoryLabelX, (float)this.inventoryLabelY, 4210752);
+    }
+
     @Override
     public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         renderBackground(matrixStack);

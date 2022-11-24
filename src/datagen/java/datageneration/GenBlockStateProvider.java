@@ -12,11 +12,11 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.Objects;
 
 import static me.mangorage.nethermelt.common.core.Constants.BlockStateProperties.STAGE;
-import static me.mangorage.nethermelt.common.core.Constants.MODID;
+import static me.mangorage.nethermelt.common.core.Constants.MOD_ID;
 
 public class GenBlockStateProvider extends BlockStateProvider {
     public GenBlockStateProvider(DataGenerator gen, ExistingFileHelper exFileHelper) {
-        super(gen, MODID, exFileHelper);
+        super(gen, MOD_ID, exFileHelper);
     }
 
 

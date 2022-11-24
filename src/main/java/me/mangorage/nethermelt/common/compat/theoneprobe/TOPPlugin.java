@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.function.Function;
 
 import static me.mangorage.nethermelt.common.core.Constants.BlockStateProperties.ACTIVATED;
-import static me.mangorage.nethermelt.common.core.Constants.MODID;
+import static me.mangorage.nethermelt.common.core.Constants.MOD_ID;
 
 public class TOPPlugin implements Function<ITheOneProbe, Void>, IProbeInfoProvider {
 
@@ -25,7 +25,7 @@ public class TOPPlugin implements Function<ITheOneProbe, Void>, IProbeInfoProvid
 
     @Override
     public ResourceLocation getID() {
-        return new ResourceLocation(MODID + ":top_support");
+        return new ResourceLocation(MOD_ID + ":top_support");
     }
 
     @Override

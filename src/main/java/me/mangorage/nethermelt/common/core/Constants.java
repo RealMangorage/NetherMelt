@@ -6,7 +6,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 
 public class Constants {
-    public final static String MODID = "nethermelt";
+    public final static String MOD_ID = "nethermelt";
     public final static Integer MAX_STAGES = 3;
 
 

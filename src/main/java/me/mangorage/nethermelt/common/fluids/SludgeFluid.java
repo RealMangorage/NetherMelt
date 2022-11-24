@@ -26,7 +26,7 @@ public class SludgeFluid extends FlowingFluid {
 
     @Override
     public FluidType getFluidType() {
-        return new FluidType(FluidType.Properties.create().rarity(Rarity.RARE).canHydrate(false).canSwim(false).canExtinguish(false).viscosity(1000).temperature(4000));
+        return Registration.SLUDGE_TYPE.get();
     }
 
     @Override
@@ -71,7 +71,7 @@ public class SludgeFluid extends FlowingFluid {
 
     @Override
     public int getTickDelay(LevelReader pLevel) {
-        return 0;
+        return 100;
     }
 
     @Override
